@@ -1,88 +1,102 @@
 package lv.venta.fidi.model;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-//import lv.venta.model.base.BaseAuditEntity;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-@Table(name = "MoviesTable")
 @Entity
-public class Movie   {
+@Table(
+    name = "MoviesTable",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = "imdb_id")
+    }
+)
+public class Movie {
 
-	// Fields | Dati
-	// =================
-	@Setter(value = AccessLevel.NONE)
-	@Id
-	@Column(name = "movie_id")
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long movieId;
+    // =================
+    // Primary key
+    // =================
+    @Setter(AccessLevel.NONE)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "movie_id")
+    private long movieId;
 
-	@NotBlank
-	@Size(max = 255)
-	@Column(name = "Title", nullable = false)
-	private String title;
+    // =================
+    // OMDb / IMDb fields (IMPORTANT)
+    // =================
+    @NotBlank
+    @Size(max = 16)
+    @Column(name = "imdb_id", nullable = false)
+    private String imdbId;
 
-	@Min(1888)
-	@Max(3000)
-	@Column(name = "ReleaseYear")
-	private Integer releaseYear;
+    @Column(name = "poster_url", columnDefinition = "TEXT")
+    private String posterUrl;
 
-	@Column(name = "RuntimeMin")
-	private Integer runtimeMin;
+    @Column(name = "imdb_rating", precision = 3, scale = 1)
+    private BigDecimal imdbRating;
 
-	@Column(name = "Description", columnDefinition = "TEXT")
-	private String description;
+    // =================
+    // Movie data
+    // =================
+    @NotBlank
+    @Size(max = 255)
+    @Column(name = "Title", nullable = false)
+    private String title;
 
-	// Connections | Saites
-	// =================
-	@ManyToMany
-	@JoinTable(
-		name = "MovieGenresTable",
-		joinColumns = @JoinColumn(name = "movie_id"),
-		inverseJoinColumns = @JoinColumn(name = "genre_id")
-	)
-	private Collection<Genre> genres;
+    @Min(1888)
+    @Max(3000)
+    @Column(name = "ReleaseYear")
+    private Integer releaseYear;
 
-	@OneToMany(mappedBy = "movie")
-	private Collection<UserMovie> userMovies;
+    @Column(name = "RuntimeMin")
+    private Integer runtimeMin;
 
-	@OneToMany(mappedBy = "movie")
-	private Collection<WatchEvent> watchEvents;
+    @Column(name = "Description", columnDefinition = "TEXT")
+    private String description;
 
-	@OneToMany(mappedBy = "movie")
-	private Collection<Rating> ratings;
+    // =================
+    // Relationships
+    // =================
+    @ManyToMany
+    @JoinTable(
+        name = "MovieGenresTable",
+        joinColumns = @JoinColumn(name = "movie_id"),
+        inverseJoinColumns = @JoinColumn(name = "genre_id")
+    )
+    private Collection<Genre> genres;
 
-	@OneToMany(mappedBy = "movie")
-	private Collection<Recommendation> recommendations;
+    @OneToMany(mappedBy = "movie")
+    private Collection<UserMovie> userMovies;
 
-	// Constructors | Konstruktori
-	// =================
-	public Movie(String title, Integer releaseYear, Integer runtimeMin, String description) {
-		setTitle(title);
-		setReleaseYear(releaseYear);
-		setRuntimeMin(runtimeMin);
-		setDescription(description);
-	}
+    @OneToMany(mappedBy = "movie")
+    private Collection<WatchEvent> watchEvents;
+
+    @OneToMany(mappedBy = "movie")
+    private Collection<Rating> ratings;
+
+    @OneToMany(mappedBy = "movie")
+    private Collection<Recommendation> recommendations;
+
+    // =================
+    // Constructor (optional)
+    // =================
+    public Movie(String imdbId, String title, Integer releaseYear, Integer runtimeMin, String description) {
+        this.imdbId = imdbId;
+        this.title = title;
+        this.releaseYear = releaseYear;
+        this.runtimeMin = runtimeMin;
+        this.description = description;
+    }
 }
