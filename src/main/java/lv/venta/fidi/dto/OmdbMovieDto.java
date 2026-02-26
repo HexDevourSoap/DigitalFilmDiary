@@ -11,11 +11,11 @@ public class OmdbMovieDto {
     private String Response;
     private String Runtime;
 
-    // ✅ Required empty constructor (Jackson needs this)
+     
     public OmdbMovieDto() {
     }
 
-    // Getters and setters
+    
     public String getTitle() {
         return Title;
     }

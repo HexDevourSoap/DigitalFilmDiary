@@ -45,16 +45,16 @@ public class MovieSeeder implements CommandLineRunner {
 
             Movie movie = new Movie();
 
-            // ✅ your new field
+            
             movie.setImdbId(dto.getImdbID());
 
-            // ✅ existing fields in your entity
+            
             movie.setTitle(dto.getTitle());
             movie.setReleaseYear(parseYear(dto.getYear()));
-            movie.setRuntimeMin(parseRuntime(dto.getRuntime())); // only if you add Runtime to DTO
+            movie.setRuntimeMin(parseRuntime(dto.getRuntime())); 
             movie.setDescription(dto.getPlot());
 
-            // ✅ optional fields (only if you added them to Movie)
+            
             movie.setPosterUrl(fixNA(dto.getPoster()));
             movie.setImdbRating(parseRating(dto.getImdbRating()));
 
@@ -70,14 +70,14 @@ public class MovieSeeder implements CommandLineRunner {
 
     private Integer parseYear(String year) {
         if (year == null || year.equals("N/A")) return null;
-        // handles "2012–2019" too
+        
         String first = year.split("–")[0].trim();
         return Integer.parseInt(first);
     }
 
     private Integer parseRuntime(String runtime) {
         if (runtime == null || runtime.equals("N/A")) return null;
-        // "142 min" -> 142
+        
         return Integer.parseInt(runtime.replace("min", "").trim());
     }
 

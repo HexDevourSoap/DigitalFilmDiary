@@ -30,18 +30,14 @@ import lombok.ToString;
 )
 public class Movie {
 
-    // =========================
-    // Primary key
-    // =========================
+    
     @Setter(AccessLevel.NONE)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "movie_id")
     private long movieId;
 
-    // =========================
-    // OMDb / IMDb fields
-    // =========================
+    
     @NotBlank
     @Size(max = 16)
     @Column(name = "imdb_id", nullable = false, unique = true)
@@ -53,9 +49,7 @@ public class Movie {
     @Column(name = "imdb_rating", precision = 3, scale = 1)
     private BigDecimal imdbRating;
 
-    // =========================
-    // Movie information
-    // =========================
+    
     @NotBlank
     @Size(max = 255)
     @Column(name = "Title", nullable = false)
@@ -72,9 +66,7 @@ public class Movie {
     @Column(name = "Description", columnDefinition = "TEXT")
     private String description;
 
-    // =========================
-    // Relationships
-    // =========================
+    
     @ManyToMany
     @JoinTable(
         name = "MovieGenresTable",
@@ -95,9 +87,7 @@ public class Movie {
     @OneToMany(mappedBy = "movie")
     private Collection<Recommendation> recommendations;
 
-    // =========================
-    // Convenience constructor
-    // =========================
+    
     public Movie(
             String imdbId,
             String title,
