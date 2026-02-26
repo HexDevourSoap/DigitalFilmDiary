@@ -9,6 +9,7 @@ public class OmdbMovieDto {
     private String imdbRating;
     private String imdbID;
     private String Response;
+    private String Runtime;
 
     // ✅ Required empty constructor (Jackson needs this)
     public OmdbMovieDto() {
@@ -69,5 +70,13 @@ public class OmdbMovieDto {
 
     public void setResponse(String response) {
         Response = response;
+    }
+
+    public String getRuntime() {
+    return Runtime;
+    }
+
+    public void setRuntime(String runtime) {
+        Runtime = runtime;
     }
 }

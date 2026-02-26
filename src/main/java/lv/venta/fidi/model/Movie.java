@@ -14,7 +14,13 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
+@ToString(exclude = {
+        "genres",
+        "userMovies",
+        "watchEvents",
+        "ratings",
+        "recommendations"
+})
 @Entity
 @Table(
     name = "MoviesTable",
@@ -24,21 +30,21 @@ import lombok.ToString;
 )
 public class Movie {
 
-    // =================
+    // =========================
     // Primary key
-    // =================
+    // =========================
     @Setter(AccessLevel.NONE)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "movie_id")
     private long movieId;
 
-    // =================
-    // OMDb / IMDb fields (IMPORTANT)
-    // =================
+    // =========================
+    // OMDb / IMDb fields
+    // =========================
     @NotBlank
     @Size(max = 16)
-    @Column(name = "imdb_id", nullable = false)
+    @Column(name = "imdb_id", nullable = false, unique = true)
     private String imdbId;
 
     @Column(name = "poster_url", columnDefinition = "TEXT")
@@ -47,9 +53,9 @@ public class Movie {
     @Column(name = "imdb_rating", precision = 3, scale = 1)
     private BigDecimal imdbRating;
 
-    // =================
-    // Movie data
-    // =================
+    // =========================
+    // Movie information
+    // =========================
     @NotBlank
     @Size(max = 255)
     @Column(name = "Title", nullable = false)
@@ -66,9 +72,9 @@ public class Movie {
     @Column(name = "Description", columnDefinition = "TEXT")
     private String description;
 
-    // =================
+    // =========================
     // Relationships
-    // =================
+    // =========================
     @ManyToMany
     @JoinTable(
         name = "MovieGenresTable",
@@ -89,10 +95,16 @@ public class Movie {
     @OneToMany(mappedBy = "movie")
     private Collection<Recommendation> recommendations;
 
-    // =================
-    // Constructor (optional)
-    // =================
-    public Movie(String imdbId, String title, Integer releaseYear, Integer runtimeMin, String description) {
+    // =========================
+    // Convenience constructor
+    // =========================
+    public Movie(
+            String imdbId,
+            String title,
+            Integer releaseYear,
+            Integer runtimeMin,
+            String description
+    ) {
         this.imdbId = imdbId;
         this.title = title;
         this.releaseYear = releaseYear;
