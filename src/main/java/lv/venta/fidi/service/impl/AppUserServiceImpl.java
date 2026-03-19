@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lv.venta.fidi.model.AppUser;
+import lv.venta.fidi.model.MyAuthority;
 import lv.venta.fidi.repo.IAppUserRepo;
+import lv.venta.fidi.repo.IMyAuthorityRepo;
 import lv.venta.fidi.service.IAppUserService;
 
 @Service
@@ -15,6 +17,9 @@ public class AppUserServiceImpl implements IAppUserService {
 
     @Autowired
     private IAppUserRepo appUserRepo;
+
+    @Autowired
+    private IMyAuthorityRepo authorityRepo;
 
     @Override
     public Collection<AppUser> retrieveAll() throws Exception {
@@ -48,7 +53,7 @@ public class AppUserServiceImpl implements IAppUserService {
     }
 
     @Override
-    public void create(String email, String passwordHash) throws Exception {
+    public void create(String email, String passwordHash, Long authorityId) throws Exception {
         if (email == null || email.isBlank()) {
             throw new Exception("Email cannot be empty");
         }
@@ -57,16 +62,23 @@ public class AppUserServiceImpl implements IAppUserService {
             throw new Exception("Password hash cannot be empty");
         }
 
+        if (authorityId == null || authorityId < 0) {
+            throw new Exception("Authority ID cannot be null or negative");
+        }
+
         if (appUserRepo.existsByEmail(email)) {
             throw new Exception("User with email " + email + " already exists");
         }
 
-        AppUser user = new AppUser(email, passwordHash);
+        MyAuthority authority = authorityRepo.findById(authorityId)
+                .orElseThrow(() -> new Exception("Authority with ID " + authorityId + " was not found"));
+
+        AppUser user = new AppUser(email, passwordHash, authority);
         appUserRepo.save(user);
     }
 
     @Override
-    public void update(Long id, String email, String passwordHash) throws Exception {
+    public void update(Long id, String email, String passwordHash, Long authorityId) throws Exception {
         if (id == null || id < 0) {
             throw new Exception("ID cannot be null or negative");
         }
@@ -79,6 +91,10 @@ public class AppUserServiceImpl implements IAppUserService {
             throw new Exception("Password hash cannot be empty");
         }
 
+        if (authorityId == null || authorityId < 0) {
+            throw new Exception("Authority ID cannot be null or negative");
+        }
+
         AppUser user = appUserRepo.findById(id)
                 .orElseThrow(() -> new Exception("User with ID " + id + " was not found"));
 
@@ -87,8 +103,12 @@ public class AppUserServiceImpl implements IAppUserService {
             throw new Exception("Another user with email " + email + " already exists");
         }
 
+        MyAuthority authority = authorityRepo.findById(authorityId)
+                .orElseThrow(() -> new Exception("Authority with ID " + authorityId + " was not found"));
+
         user.setEmail(email);
         user.setPasswordHash(passwordHash);
+        user.setAuthority(authority);
 
         appUserRepo.save(user);
     }
