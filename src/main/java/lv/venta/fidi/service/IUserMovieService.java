@@ -17,6 +17,8 @@ public interface IUserMovieService {
 
     Collection<UserMovie> retrieveByMovieId(Long movieId) throws Exception;
 
+    UserMovie retrieveById(Long userMovieId) throws Exception;
+
     Optional<UserMovie> findByUserIdAndMovieId(Long userId, Long movieId) throws Exception;
 
     void deleteById(Long userMovieId) throws Exception;

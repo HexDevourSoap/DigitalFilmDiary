@@ -85,10 +85,6 @@ public class RatingServiceImpl implements IRatingService {
 
         Collection<Rating> ratings = ratingRepo.findByUser(user);
 
-        if (ratings.isEmpty()) {
-            throw new Exception("This user has no ratings");
-        }
-
         return ratings;
     }
 
@@ -130,4 +126,15 @@ public class RatingServiceImpl implements IRatingService {
 
         return ratingRepo.findByUserAndMovie(user, movie);
     }
+
+    @Override
+    public Rating retrieveById(Long ratingId) throws Exception {
+
+        if (ratingId == null || ratingId < 0) {
+            throw new Exception("Rating ID cannot be null or negative");
+        }
+
+        return ratingRepo.findById(ratingId)
+                .orElseThrow(() -> new Exception("Rating with ID " + ratingId + " was not found"));
+}
 }

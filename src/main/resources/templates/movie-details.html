@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Movie Details</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+    <div th:if="${movie != null}">
+        <h1 th:text="${movie.title}">Movie Title</h1>
+
+        <img th:if="${movie.posterUrl != null and !#strings.isEmpty(movie.posterUrl)}"
+             th:src="${movie.posterUrl}"
+             alt="Poster"
+             width="200">
+
+        <p>
+            <strong>IMDb ID:</strong>
+            <span th:text="${movie.imdbId}">tt1234567</span>
+        </p>
+
+        <p>
+            <strong>Release year:</strong>
+            <span th:text="${movie.releaseYear}">2024</span>
+        </p>
+
+        <p>
+            <strong>Runtime:</strong>
+            <span th:text="${movie.runtimeMin}">120</span> min
+        </p>
+
+        <p>
+            <strong>IMDb rating:</strong>
+            <span th:text="${movie.imdbRating}">8.5</span>
+        </p>
+
+        <p th:text="${movie.description}">Movie description</p>
+
+        <h3>Genres</h3>
+        <ul>
+            <li th:each="genre : ${movie.genres}" th:text="${genre.name}">Action</li>
+        </ul>
+
+        <a th:href="@{/diary/create/{movieId}(movieId=${movie.movieId})}">Add to diary</a>
+        <a th:href="@{/watch-events/create/{movieId}(movieId=${movie.movieId})}">Add watch event</a>
+        <a th:href="@{/ratings/create/{movieId}(movieId=${movie.movieId})}">Add rating</a>
+    </div>
+
+    <br>
+    <a href="/movies">Back to movies</a>
+
+</body>
+</html>

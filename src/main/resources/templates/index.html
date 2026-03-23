@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title>Movie Diary</title>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+
+<h1>🎬 Movie Diary</h1>
+
+<nav>
+    <a th:href="@{/}">Home</a> |
+    <a th:href="@{/movies}">Browse movies</a> |
+    <a th:href="@{/diary}">My diary</a> |
+
+    
+    <span sec:authorize="isAnonymous()">
+        <a th:href="@{/login}">Login</a>
+    </span>
+
+    
+    <span sec:authorize="isAuthenticated()">
+        <span>
+            Logged in as:
+            <b sec:authentication="name"></b>
+        </span>
+
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit">Logout</button>
+        </form>
+    </span>
+</nav>
+
+<hr>
+
+<h2>Trending Movies</h2>
+
+
+<div th:if="${movies == null or #lists.isEmpty(movies)}">
+    <p>No movies available.</p>
+</div>
+
+
+<div style="display:flex; flex-wrap:wrap; gap:20px;">
+
+    <div th:each="m : ${movies}" style="width:150px; text-align:center;">
+
+        
+        <a th:href="@{/movies/{id}(id=${m.movieId})}">
+
+            
+            <img th:if="${m.posterUrl != null and !#strings.isEmpty(m.posterUrl)}"
+                 th:src="${m.posterUrl}"
+                 width="120"
+                 alt="Poster"/>
+
+            
+            <div th:if="${m.posterUrl == null or #strings.isEmpty(m.posterUrl)}"
+                 style="width:120px; height:180px; background:#ccc;">
+            </div>
+
+            
+            <p th:text="${m.title}">Movie Title</p>
+        </a>
+
+        
+        <div sec:authorize="isAuthenticated()">
+            <a th:href="@{/diary/create/{movieId}(movieId=${m.movieId})}">
+                ➕ Add to diary
+            </a>
+        </div>
+
+        
+        <div sec:authorize="isAnonymous()">
+            <a th:href="@{/login}">
+                🔒 Login to add
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

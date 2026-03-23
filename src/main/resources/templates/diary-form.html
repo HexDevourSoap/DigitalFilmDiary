@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add to Diary</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+    <h1>Add Movie to Diary</h1>
+
+    <div th:if="${movie != null}">
+        <h2 th:text="${movie.title}">Movie Title</h2>
+        <p th:text="${movie.description}">Movie description</p>
+    </div>
+
+    <form th:action="@{/diary/create}" th:object="${userMovie}" method="post">
+        <input type="hidden" name="movieId" th:value="${movie.movieId}" />
+
+        <div>
+            <label for="status">Status:</label>
+            <select id="status" th:field="*{status}">
+                <option value="">-- Select status --</option>
+                <option th:each="statusOption : ${statuses}"
+                        th:value="${statusOption}"
+                        th:text="${statusOption}">
+                </option>
+            </select>
+        </div>
+
+        <br>
+
+        <div>
+            <label for="plannedDate">Planned date:</label>
+            <input type="date" id="plannedDate" th:field="*{plannedDate}">
+        </div>
+
+        <br>
+
+        <button type="submit">Save to diary</button>
+    </form>
+
+    <br>
+    <a th:href="@{/movies/{id}(id=${movie.movieId})}">Back to movie</a>
+
+</body>
+</html>

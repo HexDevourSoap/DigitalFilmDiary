@@ -136,6 +136,17 @@ public class UserMovieServiceImpl implements IUserMovieService {
     }
 
     @Override
+    public UserMovie retrieveById(Long userMovieId) throws Exception {
+
+        if (userMovieId == null || userMovieId < 0) {
+            throw new Exception("UserMovie ID cannot be null or negative");
+        }
+
+        return userMovieRepo.findById(userMovieId)
+                .orElseThrow(() -> new Exception("UserMovie with ID " + userMovieId + " was not found"));
+    }
+
+    @Override
     public void deleteById(Long userMovieId) throws Exception {
 
         if (userMovieId == null || userMovieId < 0) {

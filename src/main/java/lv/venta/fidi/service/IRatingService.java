@@ -3,7 +3,6 @@ package lv.venta.fidi.service;
 import java.util.Collection;
 import java.util.Optional;
 
-
 import lv.venta.fidi.model.Rating;
 
 public interface IRatingService {
@@ -16,6 +15,7 @@ public interface IRatingService {
 
     public abstract Collection<Rating> retrieveByMovieId(Long movieId) throws Exception;
 
-    public abstract Optional<Rating> findByUserIdAndMovieId(Long userId, Long movieId) throws Exception;
+    public abstract Rating retrieveById(Long ratingId) throws Exception;
 
+    public abstract Optional<Rating> findByUserIdAndMovieId(Long userId, Long movieId) throws Exception;
 }

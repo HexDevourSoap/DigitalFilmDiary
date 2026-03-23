@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Watch Event</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+    <h1>Add Watch Event</h1>
+
+    <div th:if="${movie != null}">
+        <h2 th:text="${movie.title}">Movie Title</h2>
+    </div>
+
+    <form th:action="@{/watch-events/create}" th:object="${watchEvent}" method="post">
+        <input type="hidden" name="movieId" th:value="${movie.movieId}" />
+
+        <div>
+            <label for="watchedAt">Watched at:</label>
+            <input type="date" id="watchedAt" th:field="*{watchedAt}">
+        </div>
+
+        <br>
+
+        <div>
+            <label for="notes">Notes:</label><br>
+            <textarea id="notes" th:field="*{notes}" rows="6" cols="50"></textarea>
+        </div>
+
+        <br>
+
+        <button type="submit">Save watch event</button>
+    </form>
+
+    <br>
+    <a th:href="@{/movies/{id}(id=${movie.movieId})}">Back to movie</a>
+
+</body>
+</html>

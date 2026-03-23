@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Rating</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+    <h1>Edit Rating</h1>
+
+    <div th:if="${rating != null}">
+        <h2 th:text="${rating.movie.title}">Movie Title</h2>
+    </div>
+
+    <form th:action="@{/ratings/update/{id}(id=${rating.ratingId})}" th:object="${rating}" method="post">
+
+        <div>
+            <label for="ratingValue">Rating (1-10):</label>
+            <input type="number" id="ratingValue" th:field="*{ratingValue}" min="1" max="10">
+        </div>
+
+        <br>
+
+        <button type="submit">Update rating</button>
+    </form>
+
+    <br>
+    <a href="/diary">Back to diary</a>
+
+</body>
+</html>

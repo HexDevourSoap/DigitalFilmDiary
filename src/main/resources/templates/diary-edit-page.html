@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Diary Entry</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+    <h1>Edit Diary Entry</h1>
+
+    <div th:if="${userMovie != null}">
+        <h2 th:text="${userMovie.movie.title}">Movie Title</h2>
+    </div>
+
+    <form th:action="@{/diary/update/{id}(id=${userMovie.userMovieId})}" th:object="${userMovie}" method="post">
+
+        <div>
+            <label for="status">Status:</label>
+            <select id="status" th:field="*{status}">
+                <option th:each="statusOption : ${statuses}"
+                        th:value="${statusOption}"
+                        th:text="${statusOption}">
+                </option>
+            </select>
+        </div>
+
+        <br>
+
+        <div>
+            <label for="plannedDate">Planned date:</label>
+            <input type="date" id="plannedDate" th:field="*{plannedDate}">
+        </div>
+
+        <br>
+
+        <button type="submit">Update entry</button>
+    </form>
+
+    <br>
+    <a href="/diary">Back to diary</a>
+
+</body>
+</html>

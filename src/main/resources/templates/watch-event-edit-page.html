@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Watch Event</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+    <h1>Edit Watch Event</h1>
+
+    <div th:if="${watchEvent != null}">
+        <h2 th:text="${watchEvent.movie.title}">Movie Title</h2>
+    </div>
+
+    <form th:action="@{/watch-events/update/{id}(id=${watchEvent.watchEventId})}"
+          th:object="${watchEvent}"
+          method="post">
+
+        <div>
+            <label for="watchedAt">Watched at:</label>
+            <input type="date" id="watchedAt" th:field="*{watchedAt}">
+        </div>
+
+        <br>
+
+        <div>
+            <label for="notes">Notes:</label><br>
+            <textarea id="notes" th:field="*{notes}" rows="6" cols="50"></textarea>
+        </div>
+
+        <br>
+
+        <button type="submit">Update watch event</button>
+    </form>
+
+    <br>
+    <a href="/diary">Back to diary</a>
+
+</body>
+</html>

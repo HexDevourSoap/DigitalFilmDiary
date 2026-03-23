@@ -29,149 +29,185 @@ import lv.venta.fidi.repo.IWatchEventRepo;
 @SpringBootApplication
 public class FidiApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(FidiApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(FidiApplication.class, args);
+    }
 
-	@Bean
-	public CommandLineRunner testDataLayer(
-			IGenreRepo genreRepo,
-			IMovieRepo movieRepo,
-			IMyAuthorityRepo authRepo,
-			IAppUserRepo userRepo,
-			IRatingRepo ratingRepo,
-			IUserMovieRepo userMovieRepo,
-			IWatchEventRepo watchEventRepo) {
+    @Bean
+    public CommandLineRunner seedData(
+            IGenreRepo genreRepo,
+            IMovieRepo movieRepo,
+            IMyAuthorityRepo authorityRepo,
+            IAppUserRepo userRepo,
+            IRatingRepo ratingRepo,
+            IUserMovieRepo userMovieRepo,
+            IWatchEventRepo watchEventRepo) {
 
-		return new CommandLineRunner() {
-			@Override
-			public void run(String... args) throws Exception {
+        return args -> {
 
-				// so data is not inserted every restart
-				if (genreRepo.count() > 0 || movieRepo.count() > 0 || userRepo.count() > 0) {
-					return;
-				}
+            PasswordEncoder passEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-				// -------------------------
-				// Authorities
-				// -------------------------
-				MyAuthority userAuthority = new MyAuthority("ROLE_USER");
-				MyAuthority adminAuthority = new MyAuthority("ROLE_ADMIN");
+            // -------------------------
+            // Authorities
+            // -------------------------
+            MyAuthority userRole = authorityRepo.findByTitle("ROLE_USER")
+                    .orElseGet(() -> authorityRepo.save(new MyAuthority("ROLE_USER")));
 
-				authRepo.saveAll(Arrays.asList(userAuthority, adminAuthority));
+            MyAuthority adminRole = authorityRepo.findByTitle("ROLE_ADMIN")
+                    .orElseGet(() -> authorityRepo.save(new MyAuthority("ROLE_ADMIN")));
 
-				// -------------------------
-				// Users
-				// -------------------------
-				PasswordEncoder passEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+            // -------------------------
+            // Users
+            // -------------------------
+            AppUser user1 = userRepo.findByEmail("user1@moviediary.lv")
+                    .orElseGet(() -> userRepo.save(
+                            new AppUser("user1@moviediary.lv", passEncoder.encode("user12345"), userRole)));
 
-				AppUser user1 = new AppUser("user1@moviediary.lv", passEncoder.encode("user12345"), userAuthority);
-				AppUser user2 = new AppUser("user2@moviediary.lv", passEncoder.encode("user12345"), userAuthority);
-				AppUser admin = new AppUser("admin@moviediary.lv", passEncoder.encode("admin12345"), adminAuthority);
+            AppUser user2 = userRepo.findByEmail("user2@moviediary.lv")
+                    .orElseGet(() -> userRepo.save(
+                            new AppUser("user2@moviediary.lv", passEncoder.encode("user12345"), userRole)));
 
-				userRepo.saveAll(Arrays.asList(user1, user2, admin));
+            AppUser admin = userRepo.findByEmail("admin@moviediary.lv")
+                    .orElseGet(() -> userRepo.save(
+                            new AppUser("admin@moviediary.lv", passEncoder.encode("admin12345"), adminRole)));
 
-				// -------------------------
-				// Genres
-				// -------------------------
-				Genre action = new Genre("Action");
-				Genre drama = new Genre("Drama");
-				Genre sciFi = new Genre("Sci-Fi");
-				Genre thriller = new Genre("Thriller");
-				Genre comedy = new Genre("Comedy");
+            // -------------------------
+            // Genres
+            // -------------------------
+            Genre action = genreRepo.findByName("Action")
+                    .orElseGet(() -> genreRepo.save(new Genre("Action")));
 
-				genreRepo.saveAll(Arrays.asList(action, drama, sciFi, thriller, comedy));
+            Genre drama = genreRepo.findByName("Drama")
+                    .orElseGet(() -> genreRepo.save(new Genre("Drama")));
 
-				// -------------------------
-				// Movies
-				// -------------------------
-				Movie movie1 = new Movie(
-						"tt0133093",
-						"The Matrix",
-						1999,
-						136,
-						"A computer hacker learns the truth about reality and his role in the war against its controllers."
-				);
-				movie1.setPosterUrl("https://m.media-amazon.com/images/M/MV5BNzQzOTk3NTAt.jpg");
-				movie1.setGenres(Arrays.asList(action, sciFi));
+            Genre sciFi = genreRepo.findByName("Sci-Fi")
+                    .orElseGet(() -> genreRepo.save(new Genre("Sci-Fi")));
 
-				Movie movie2 = new Movie(
-						"tt1375666",
-						"Inception",
-						2010,
-						148,
-						"A thief who enters dreams is given a chance at redemption if he can perform inception."
-				);
-				movie2.setPosterUrl("https://m.media-amazon.com/images/M/MV5BMmEz.jpg");
-				movie2.setGenres(Arrays.asList(action, sciFi, thriller));
+            Genre thriller = genreRepo.findByName("Thriller")
+                    .orElseGet(() -> genreRepo.save(new Genre("Thriller")));
 
-				Movie movie3 = new Movie(
-						"tt0816692",
-						"Interstellar",
-						2014,
-						169,
-						"A team travels through a wormhole in space in an attempt to ensure humanity's survival."
-				);
-				movie3.setPosterUrl("https://m.media-amazon.com/images/M/MV5BZjdkOTU3.jpg");
-				movie3.setGenres(Arrays.asList(drama, sciFi));
+            Genre comedy = genreRepo.findByName("Comedy")
+                    .orElseGet(() -> genreRepo.save(new Genre("Comedy")));
 
-				Movie movie4 = new Movie(
-						"tt0110912",
-						"Pulp Fiction",
-						1994,
-						154,
-						"The lives of several criminals intertwine in a series of violent and darkly comic incidents."
-				);
-				movie4.setPosterUrl("https://m.media-amazon.com/images/M/MV5BNGNhMDIz.jpg");
-				movie4.setGenres(Arrays.asList(drama, thriller, comedy));
+            // -------------------------
+            // Movies
+            // -------------------------
+            Movie movie1 = movieRepo.findByImdbId("tt0133093")
+                    .orElseGet(() -> {
+                        Movie m = new Movie(
+                                "tt0133093",
+                                "The Matrix",
+                                1999,
+                                136,
+                                "A computer hacker learns the truth about reality and his role in the war against its controllers.");
+                        m.setPosterUrl("https://m.media-amazon.com/images/M/MV5BNzQzOTk3NTAt.jpg");
+                        m.setGenres(Arrays.asList(action, sciFi));
+                        return movieRepo.save(m);
+                    });
 
-				movieRepo.saveAll(Arrays.asList(movie1, movie2, movie3, movie4));
+            Movie movie2 = movieRepo.findByImdbId("tt1375666")
+                    .orElseGet(() -> {
+                        Movie m = new Movie(
+                                "tt1375666",
+                                "Inception",
+                                2010,
+                                148,
+                                "A thief who enters dreams is given a chance at redemption if he can perform inception.");
+                        m.setPosterUrl("https://m.media-amazon.com/images/M/MV5BMmEz.jpg");
+                        m.setGenres(Arrays.asList(action, sciFi, thriller));
+                        return movieRepo.save(m);
+                    });
 
-				// -------------------------
-				// User diary statuses
-				// -------------------------
-				UserMovie um1 = new UserMovie(user1, movie1, WatchStatus.WATCHED);
-				UserMovie um2 = new UserMovie(user1, movie2, WatchStatus.PLAN_TO_WATCH, LocalDate.now().plusDays(3));
-				UserMovie um3 = new UserMovie(user2, movie3, WatchStatus.WATCHING);
-				UserMovie um4 = new UserMovie(user2, movie4, WatchStatus.WATCHED);
+            Movie movie3 = movieRepo.findByImdbId("tt0816692")
+                    .orElseGet(() -> {
+                        Movie m = new Movie(
+                                "tt0816692",
+                                "Interstellar",
+                                2014,
+                                169,
+                                "A team travels through a wormhole in space in an attempt to ensure humanity's survival.");
+                        m.setPosterUrl("https://m.media-amazon.com/images/M/MV5BZjdkOTU3.jpg");
+                        m.setGenres(Arrays.asList(drama, sciFi));
+                        return movieRepo.save(m);
+                    });
 
-				userMovieRepo.saveAll(Arrays.asList(um1, um2, um3, um4));
+            Movie movie4 = movieRepo.findByImdbId("tt0110912")
+                    .orElseGet(() -> {
+                        Movie m = new Movie(
+                                "tt0110912",
+                                "Pulp Fiction",
+                                1994,
+                                154,
+                                "The lives of several criminals intertwine in a series of violent and darkly comic incidents.");
+                        m.setPosterUrl("https://m.media-amazon.com/images/M/MV5BNGNhMDIz.jpg");
+                        m.setGenres(Arrays.asList(drama, thriller, comedy));
+                        return movieRepo.save(m);
+                    });
 
-				// -------------------------
-				// Ratings
-				// -------------------------
-				Rating rating1 = new Rating(user1, movie1, 10);
-				Rating rating2 = new Rating(user2, movie4, 9);
-				Rating rating3 = new Rating(user2, movie3, 8);
+            // -------------------------
+            // UserMovie diary entries
+            // -------------------------
+            if (!userMovieRepo.existsByUserAndMovie(user1, movie1)) {
+                userMovieRepo.save(new UserMovie(user1, movie1, WatchStatus.WATCHED));
+            }
 
-				ratingRepo.saveAll(Arrays.asList(rating1, rating2, rating3));
+            if (!userMovieRepo.existsByUserAndMovie(user1, movie2)) {
+                userMovieRepo.save(new UserMovie(user1, movie2, WatchStatus.PLAN_TO_WATCH, LocalDate.now().plusDays(3)));
+            }
 
-				// -------------------------
-				// Watch events
-				// -------------------------
-				WatchEvent watch1 = new WatchEvent(
-						user1,
-						movie1,
-						LocalDate.now().minusDays(7),
-						"Mind-blowing sci-fi. Definitely rewatching."
-				);
+            if (!userMovieRepo.existsByUserAndMovie(user2, movie3)) {
+                userMovieRepo.save(new UserMovie(user2, movie3, WatchStatus.WATCHING));
+            }
 
-				WatchEvent watch2 = new WatchEvent(
-						user2,
-						movie4,
-						LocalDate.now().minusDays(2),
-						"Great dialogue and very memorable scenes."
-				);
+            if (!userMovieRepo.existsByUserAndMovie(user2, movie4)) {
+                userMovieRepo.save(new UserMovie(user2, movie4, WatchStatus.WATCHED));
+            }
 
-				WatchEvent watch3 = new WatchEvent(
-						user2,
-						movie3,
-						LocalDate.now().minusDays(1),
-						"Watched half of it, finishing later."
-				);
+            // -------------------------
+            // Ratings
+            // -------------------------
+            if (!ratingRepo.existsByUserAndMovie(user1, movie1)) {
+                ratingRepo.save(new Rating(user1, movie1, 10));
+            }
 
-				watchEventRepo.saveAll(Arrays.asList(watch1, watch2, watch3));
-			}
-		};
-	}
+            if (!ratingRepo.existsByUserAndMovie(user2, movie4)) {
+                ratingRepo.save(new Rating(user2, movie4, 9));
+            }
+
+            if (!ratingRepo.existsByUserAndMovie(user2, movie3)) {
+                ratingRepo.save(new Rating(user2, movie3, 8));
+            }
+
+            // -------------------------
+            // Watch events
+            // -------------------------
+            if (watchEventRepo.findByUserAndMovie(user1, movie1).isEmpty()) {
+                watchEventRepo.save(new WatchEvent(
+                        user1,
+                        movie1,
+                        LocalDate.now().minusDays(7),
+                        "Mind-blowing sci-fi. Definitely rewatching."));
+            }
+
+            if (watchEventRepo.findByUserAndMovie(user2, movie4).isEmpty()) {
+                watchEventRepo.save(new WatchEvent(
+                        user2,
+                        movie4,
+                        LocalDate.now().minusDays(2),
+                        "Great dialogue and very memorable scenes."));
+            }
+
+            if (watchEventRepo.findByUserAndMovie(user2, movie3).isEmpty()) {
+                watchEventRepo.save(new WatchEvent(
+                        user2,
+                        movie3,
+                        LocalDate.now().minusDays(1),
+                        "Watched half of it, finishing later."));
+            }
+
+            System.out.println("Seed data loaded.");
+            System.out.println("Login user: user1@moviediary.lv / user12345");
+            System.out.println("Login admin: admin@moviediary.lv / admin12345");
+        };
+    }
 }

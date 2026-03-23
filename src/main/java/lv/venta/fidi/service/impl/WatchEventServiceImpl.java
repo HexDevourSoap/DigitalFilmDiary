@@ -83,10 +83,6 @@ public class WatchEventServiceImpl implements IWatchEventService {
 
         Collection<WatchEvent> events = watchEventRepo.findByUser(user);
 
-        if (events.isEmpty()) {
-            throw new Exception("This user has no watch events");
-        }
-
         return events;
     }
 
@@ -127,5 +123,29 @@ public class WatchEventServiceImpl implements IWatchEventService {
                 .orElseThrow(() -> new Exception("Movie with ID " + movieId + " was not found"));
 
         return watchEventRepo.findByUserAndMovie(user, movie);
+    }
+
+    @Override
+    public WatchEvent retrieveById(Long watchEventId) throws Exception {
+
+        if (watchEventId == null || watchEventId < 0) {
+            throw new Exception("WatchEvent ID cannot be null or negative");
+        }
+
+        return watchEventRepo.findById(watchEventId)
+                .orElseThrow(() -> new Exception("WatchEvent with ID " + watchEventId + " was not found"));
+    }
+
+    @Override
+    public void deleteById(Long watchEventId) throws Exception {
+
+        if (watchEventId == null || watchEventId < 0) {
+            throw new Exception("WatchEvent ID cannot be null or negative");
+        }
+
+        WatchEvent watchEvent = watchEventRepo.findById(watchEventId)
+                .orElseThrow(() -> new Exception("WatchEvent with ID " + watchEventId + " was not found"));
+
+        watchEventRepo.delete(watchEvent);
     }
 }

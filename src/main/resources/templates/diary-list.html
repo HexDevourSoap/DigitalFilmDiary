@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Diary</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+    <h1>My Movie Diary</h1>
+
+    <h2>Saved / Planned / Watching</h2>
+    <div th:if="${diaryEntries == null or #lists.isEmpty(diaryEntries)}">
+        <p>No diary entries yet.</p>
+    </div>
+
+    <div th:each="entry : ${diaryEntries}">
+        <hr>
+        <h3 th:text="${entry.movie.title}">Movie Title</h3>
+        <p>Status: <span th:text="${entry.status}">WATCHED</span></p>
+        <p th:if="${entry.plannedDate != null}">
+            Planned date: <span th:text="${entry.plannedDate}">2026-03-20</span>
+        </p>
+
+        <a th:href="@{/movies/{id}(id=${entry.movie.movieId})}">View movie</a>
+        <a th:href="@{/diary/update/{id}(id=${entry.userMovieId})}">Edit</a>
+        <a th:href="@{/diary/delete/{id}(id=${entry.userMovieId})}">Delete</a>
+    </div>
+
+    <h2>Watch Events</h2>
+    <div th:if="${watchEvents == null or #lists.isEmpty(watchEvents)}">
+        <p>No watch events yet.</p>
+    </div>
+
+    <div th:each="event : ${watchEvents}">
+        <hr>
+        <h3 th:text="${event.movie.title}">Movie Title</h3>
+        <p>Watched at: <span th:text="${event.watchedAt}">2026-03-20</span></p>
+        <p th:if="${event.notes != null and !#strings.isEmpty(event.notes)}">
+            Notes: <span th:text="${event.notes}">Great movie</span>
+        </p>
+
+        <a th:href="@{/watch-events/update/{id}(id=${event.watchEventId})}">Edit watch event</a>
+        <a th:href="@{/watch-events/delete/{id}(id=${event.watchEventId})}">Delete watch event</a>
+    </div>
+
+    <h2>Ratings</h2>
+    <div th:if="${ratings == null or #lists.isEmpty(ratings)}">
+        <p>No ratings yet.</p>
+    </div>
+
+    <div th:each="rating : ${ratings}">
+        <hr>
+        <h3 th:text="${rating.movie.title}">Movie Title</h3>
+        <p>Rating: <span th:text="${rating.ratingValue}">8</span>/10</p>
+        <p>Rated at: <span th:text="${rating.ratedAt}">2026-03-20T12:00</span></p>
+
+        <a th:href="@{/ratings/update/{id}(id=${rating.ratingId})}">Edit rating</a>
+    </div>
+
+    <br>
+    <a href="/">Back to home</a>
+    <a href="/movies">Browse movies</a>
+
+</body>
+</html>

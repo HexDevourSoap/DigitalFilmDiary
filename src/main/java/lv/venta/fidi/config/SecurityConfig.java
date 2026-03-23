@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -17,33 +16,37 @@ import lv.venta.fidi.service.impl.AppUserDetailsServiceImpl;
 public class SecurityConfig {
 
     @Bean
-    public UserDetailsService loadMyUserDetailsManager() {
-        return new AppUserDetailsServiceImpl();
-    }
-
-    @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     @Bean
-    public DaoAuthenticationProvider loadDaoAuthProvider() {
-        DaoAuthenticationProvider provider =
-                new DaoAuthenticationProvider(loadMyUserDetailsManager());
+    public DaoAuthenticationProvider loadDaoAuthProvider(AppUserDetailsServiceImpl userDetailsService) {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
 
     @Bean
-    public SecurityFilterChain configureUrlsSecurity(HttpSecurity http) throws Exception {
+    public SecurityFilterChain configureUrlsSecurity(HttpSecurity http,
+                                                     DaoAuthenticationProvider authProvider) throws Exception {
         http
-            .authenticationProvider(loadDaoAuthProvider())
+            .authenticationProvider(authProvider)
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/").authenticated()
+                .requestMatchers("/", "/movies/**", "/css/**", "/js/**", "/images/**", "/login").permitAll()
+                .requestMatchers("/diary/**", "/watch-events/**", "/ratings/**").authenticated()
                 .anyRequest().permitAll()
             )
-            .formLogin(auth -> auth.permitAll())
-            .csrf(auth -> auth.disable());
+            .formLogin(form -> form
+                .loginPage("/login")
+                .defaultSuccessUrl("/", true)
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutSuccessUrl("/login?logout")
+                .permitAll()
+            )
+            .csrf(csrf -> csrf.disable());
 
         return http.build();
     }

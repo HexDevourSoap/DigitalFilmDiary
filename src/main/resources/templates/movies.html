@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Movies</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<h1>All Movies</h1>
+
+<!-- If no movies -->
+<div th:if="${movies == null or #lists.isEmpty(movies)}">
+    <p>No movies found.</p>
+</div>
+
+<!-- Movie list -->
+<div th:each="movie : ${movies}">
+    <hr>
+
+    <a th:href="@{/movies/{id}(id=${movie.movieId})}">
+        <h3 th:text="${movie.title}">Movie Title</h3>
+    </a>
+
+    <p>
+        <strong>Year:</strong>
+        <span th:text="${movie.releaseYear}">2024</span>
+    </p>
+
+    <p th:if="${movie.imdbRating != null}">
+        <strong>Rating:</strong>
+        <span th:text="${movie.imdbRating}">8.5</span>
+    </p>
+
+    <p th:text="${movie.description}">Description</p>
+
+    
+    <a th:href="@{/diary/create/{movieId}(movieId=${movie.movieId})}">
+        Add to diary
+    </a>
+</div>
+
+<br>
+
+<a href="/">Back to home</a>
+<a href="/diary">My diary</a>
+
+</body>
+</html>

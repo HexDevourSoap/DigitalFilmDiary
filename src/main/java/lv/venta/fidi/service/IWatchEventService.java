@@ -17,4 +17,7 @@ public interface IWatchEventService {
 
     public abstract Collection<WatchEvent> retrieveByUserIdAndMovieId(Long userId, Long movieId) throws Exception;
 
+    public abstract WatchEvent retrieveById(Long watchEventId) throws Exception;
+
+    public abstract void deleteById(Long watchEventId) throws Exception;
 }
