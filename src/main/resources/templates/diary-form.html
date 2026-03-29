@@ -10,11 +10,11 @@
 
     <div th:if="${movie != null}">
         <h2 th:text="${movie.title}">Movie Title</h2>
-        <p th:text="${movie.description}">Movie description</p>
+        <p th:text="${movie.plot}">Movie description</p>
     </div>
 
     <form th:action="@{/diary/create}" th:object="${userMovie}" method="post">
-        <input type="hidden" name="movieId" th:value="${movie.movieId}" />
+        <input type="hidden" name="imdbId" th:value="${movie.imdbID}" />
 
         <div>
             <label for="status">Status:</label>
@@ -40,7 +40,7 @@
     </form>
 
     <br>
-    <a th:href="@{/movies/{id}(id=${movie.movieId})}">Back to movie</a>
+    <a href="/movies">Back to movies</a>
 
 </body>
 </html>

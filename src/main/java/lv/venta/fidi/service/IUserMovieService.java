@@ -9,17 +9,17 @@ import lv.venta.fidi.model.UserMovie;
 
 public interface IUserMovieService {
 
-    void create(Long userId, Long movieId, WatchStatus status, LocalDate plannedDate) throws Exception;
+    void create(Long userId, String imdbId, WatchStatus status, LocalDate plannedDate) throws Exception;
 
     void update(Long userMovieId, WatchStatus status, LocalDate plannedDate) throws Exception;
 
     Collection<UserMovie> retrieveByUserId(Long userId) throws Exception;
 
-    Collection<UserMovie> retrieveByMovieId(Long movieId) throws Exception;
+    Collection<UserMovie> retrieveByImdbId(String imdbId) throws Exception;
 
     UserMovie retrieveById(Long userMovieId) throws Exception;
 
-    Optional<UserMovie> findByUserIdAndMovieId(Long userId, Long movieId) throws Exception;
+    Optional<UserMovie> findByUserIdAndImdbId(Long userId, String imdbId) throws Exception;
 
     void deleteById(Long userMovieId) throws Exception;
 }

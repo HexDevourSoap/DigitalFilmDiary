@@ -9,10 +9,8 @@ import org.springframework.stereotype.Service;
 
 import lv.venta.fidi.enums.WatchStatus;
 import lv.venta.fidi.model.AppUser;
-import lv.venta.fidi.model.Movie;
 import lv.venta.fidi.model.UserMovie;
 import lv.venta.fidi.repo.IAppUserRepo;
-import lv.venta.fidi.repo.IMovieRepo;
 import lv.venta.fidi.repo.IUserMovieRepo;
 import lv.venta.fidi.service.IUserMovieService;
 
@@ -25,18 +23,15 @@ public class UserMovieServiceImpl implements IUserMovieService {
     @Autowired
     private IAppUserRepo appUserRepo;
 
-    @Autowired
-    private IMovieRepo movieRepo;
-
     @Override
-    public void create(Long userId, Long movieId, WatchStatus status, LocalDate plannedDate) throws Exception {
+    public void create(Long userId, String imdbId, WatchStatus status, LocalDate plannedDate) throws Exception {
 
         if (userId == null || userId < 0) {
             throw new Exception("User ID cannot be null or negative");
         }
 
-        if (movieId == null || movieId < 0) {
-            throw new Exception("Movie ID cannot be null or negative");
+        if (imdbId == null || imdbId.isBlank()) {
+            throw new Exception("IMDb ID cannot be empty");
         }
 
         if (status == null) {
@@ -46,14 +41,11 @@ public class UserMovieServiceImpl implements IUserMovieService {
         AppUser user = appUserRepo.findById(userId)
                 .orElseThrow(() -> new Exception("User with ID " + userId + " was not found"));
 
-        Movie movie = movieRepo.findById(movieId)
-                .orElseThrow(() -> new Exception("Movie with ID " + movieId + " was not found"));
-
-        if (userMovieRepo.existsByUserAndMovie(user, movie)) {
+        if (userMovieRepo.existsByUserAndImdbId(user, imdbId)) {
             throw new Exception("This user already has this movie in diary");
         }
 
-        UserMovie userMovie = new UserMovie(user, movie, status, plannedDate);
+        UserMovie userMovie = new UserMovie(user, imdbId, status, plannedDate);
         userMovieRepo.save(userMovie);
     }
 
@@ -87,52 +79,34 @@ public class UserMovieServiceImpl implements IUserMovieService {
         AppUser user = appUserRepo.findById(userId)
                 .orElseThrow(() -> new Exception("User with ID " + userId + " was not found"));
 
-        Collection<UserMovie> userMovies = userMovieRepo.findByUser(user);
-
-        if (userMovies.isEmpty()) {
-            throw new Exception("This user has no diary entries");
-        }
-
-        return userMovies;
+        return userMovieRepo.findByUser(user);
     }
 
     @Override
-    public Collection<UserMovie> retrieveByMovieId(Long movieId) throws Exception {
+    public Collection<UserMovie> retrieveByImdbId(String imdbId) throws Exception {
 
-        if (movieId == null || movieId < 0) {
-            throw new Exception("Movie ID cannot be null or negative");
+        if (imdbId == null || imdbId.isBlank()) {
+            throw new Exception("IMDb ID cannot be empty");
         }
 
-        Movie movie = movieRepo.findById(movieId)
-                .orElseThrow(() -> new Exception("Movie with ID " + movieId + " was not found"));
-
-        Collection<UserMovie> userMovies = userMovieRepo.findByMovie(movie);
-
-        if (userMovies.isEmpty()) {
-            throw new Exception("This movie is not in any user's diary");
-        }
-
-        return userMovies;
+        return userMovieRepo.findByImdbId(imdbId);
     }
 
     @Override
-    public Optional<UserMovie> findByUserIdAndMovieId(Long userId, Long movieId) throws Exception {
+    public Optional<UserMovie> findByUserIdAndImdbId(Long userId, String imdbId) throws Exception {
 
         if (userId == null || userId < 0) {
             throw new Exception("User ID cannot be null or negative");
         }
 
-        if (movieId == null || movieId < 0) {
-            throw new Exception("Movie ID cannot be null or negative");
+        if (imdbId == null || imdbId.isBlank()) {
+            throw new Exception("IMDb ID cannot be empty");
         }
 
         AppUser user = appUserRepo.findById(userId)
                 .orElseThrow(() -> new Exception("User with ID " + userId + " was not found"));
 
-        Movie movie = movieRepo.findById(movieId)
-                .orElseThrow(() -> new Exception("Movie with ID " + movieId + " was not found"));
-
-        return userMovieRepo.findByUserAndMovie(user, movie);
+        return userMovieRepo.findByUserAndImdbId(user, imdbId);
     }
 
     @Override

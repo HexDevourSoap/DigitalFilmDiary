@@ -7,10 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lv.venta.fidi.model.AppUser;
-import lv.venta.fidi.model.Movie;
 import lv.venta.fidi.model.Rating;
 import lv.venta.fidi.repo.IAppUserRepo;
-import lv.venta.fidi.repo.IMovieRepo;
 import lv.venta.fidi.repo.IRatingRepo;
 import lv.venta.fidi.service.IRatingService;
 
@@ -23,18 +21,15 @@ public class RatingServiceImpl implements IRatingService {
     @Autowired
     private IAppUserRepo appUserRepo;
 
-    @Autowired
-    private IMovieRepo movieRepo;
-
     @Override
-    public void create(Long userId, Long movieId, int ratingValue) throws Exception {
+    public void create(Long userId, String imdbId, int ratingValue) throws Exception {
 
         if (userId == null || userId < 0) {
             throw new Exception("User ID cannot be null or negative");
         }
 
-        if (movieId == null || movieId < 0) {
-            throw new Exception("Movie ID cannot be null or negative");
+        if (imdbId == null || imdbId.isBlank()) {
+            throw new Exception("IMDb ID cannot be empty");
         }
 
         if (ratingValue < 1 || ratingValue > 10) {
@@ -44,14 +39,11 @@ public class RatingServiceImpl implements IRatingService {
         AppUser user = appUserRepo.findById(userId)
                 .orElseThrow(() -> new Exception("User with ID " + userId + " was not found"));
 
-        Movie movie = movieRepo.findById(movieId)
-                .orElseThrow(() -> new Exception("Movie with ID " + movieId + " was not found"));
-
-        if (ratingRepo.existsByUserAndMovie(user, movie)) {
+        if (ratingRepo.existsByUserAndImdbId(user, imdbId)) {
             throw new Exception("This user has already rated this movie");
         }
 
-        Rating rating = new Rating(user, movie, ratingValue);
+        Rating rating = new Rating(user, imdbId, ratingValue);
         ratingRepo.save(rating);
     }
 
@@ -83,48 +75,34 @@ public class RatingServiceImpl implements IRatingService {
         AppUser user = appUserRepo.findById(userId)
                 .orElseThrow(() -> new Exception("User with ID " + userId + " was not found"));
 
-        Collection<Rating> ratings = ratingRepo.findByUser(user);
-
-        return ratings;
+        return ratingRepo.findByUser(user);
     }
 
     @Override
-    public Collection<Rating> retrieveByMovieId(Long movieId) throws Exception {
+    public Collection<Rating> retrieveByImdbId(String imdbId) throws Exception {
 
-        if (movieId == null || movieId < 0) {
-            throw new Exception("Movie ID cannot be null or negative");
+        if (imdbId == null || imdbId.isBlank()) {
+            throw new Exception("IMDb ID cannot be empty");
         }
 
-        Movie movie = movieRepo.findById(movieId)
-                .orElseThrow(() -> new Exception("Movie with ID " + movieId + " was not found"));
-
-        Collection<Rating> ratings = ratingRepo.findByMovie(movie);
-
-        if (ratings.isEmpty()) {
-            throw new Exception("This movie has no ratings");
-        }
-
-        return ratings;
+        return ratingRepo.findByImdbId(imdbId);
     }
 
     @Override
-    public Optional<Rating> findByUserIdAndMovieId(Long userId, Long movieId) throws Exception {
+    public Optional<Rating> findByUserIdAndImdbId(Long userId, String imdbId) throws Exception {
 
         if (userId == null || userId < 0) {
             throw new Exception("User ID cannot be null or negative");
         }
 
-        if (movieId == null || movieId < 0) {
-            throw new Exception("Movie ID cannot be null or negative");
+        if (imdbId == null || imdbId.isBlank()) {
+            throw new Exception("IMDb ID cannot be empty");
         }
 
         AppUser user = appUserRepo.findById(userId)
                 .orElseThrow(() -> new Exception("User with ID " + userId + " was not found"));
 
-        Movie movie = movieRepo.findById(movieId)
-                .orElseThrow(() -> new Exception("Movie with ID " + movieId + " was not found"));
-
-        return ratingRepo.findByUserAndMovie(user, movie);
+        return ratingRepo.findByUserAndImdbId(user, imdbId);
     }
 
     @Override
@@ -136,5 +114,5 @@ public class RatingServiceImpl implements IRatingService {
 
         return ratingRepo.findById(ratingId)
                 .orElseThrow(() -> new Exception("Rating with ID " + ratingId + " was not found"));
-}
+    }
 }

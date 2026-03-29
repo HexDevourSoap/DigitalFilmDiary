@@ -15,11 +15,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString(exclude = {
-        "genres",
-        "userMovies",
-        "watchEvents",
-        "ratings",
-        "recommendations"
+        "genres"
 })
 @Entity
 @Table(
@@ -30,14 +26,12 @@ import lombok.ToString;
 )
 public class Movie {
 
-    
     @Setter(AccessLevel.NONE)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "movie_id")
     private long movieId;
 
-    
     @NotBlank
     @Size(max = 16)
     @Column(name = "imdb_id", nullable = false, unique = true)
@@ -49,7 +43,6 @@ public class Movie {
     @Column(name = "imdb_rating", precision = 3, scale = 1)
     private BigDecimal imdbRating;
 
-    
     @NotBlank
     @Size(max = 255)
     @Column(name = "Title", nullable = false)
@@ -66,7 +59,6 @@ public class Movie {
     @Column(name = "Description", columnDefinition = "TEXT")
     private String description;
 
-    
     @ManyToMany
     @JoinTable(
         name = "MovieGenresTable",
@@ -75,19 +67,6 @@ public class Movie {
     )
     private Collection<Genre> genres;
 
-    @OneToMany(mappedBy = "movie")
-    private Collection<UserMovie> userMovies;
-
-    @OneToMany(mappedBy = "movie")
-    private Collection<WatchEvent> watchEvents;
-
-    @OneToMany(mappedBy = "movie")
-    private Collection<Rating> ratings;
-
-    @OneToMany(mappedBy = "movie")
-    private Collection<Recommendation> recommendations;
-
-    
     public Movie(
             String imdbId,
             String title,

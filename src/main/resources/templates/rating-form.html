@@ -13,7 +13,7 @@
     </div>
 
     <form th:action="@{/ratings/create}" th:object="${rating}" method="post">
-        <input type="hidden" name="movieId" th:value="${movie.movieId}" />
+        <input type="hidden" name="imdbId" th:value="${movie.imdbID}" />
 
         <div>
             <label for="ratingValue">Rating (1-10):</label>
@@ -26,7 +26,7 @@
     </form>
 
     <br>
-    <a th:href="@{/movies/{id}(id=${movie.movieId})}">Back to movie</a>
+    <a href="/movies">Back to movies</a>
 
 </body>
 </html>

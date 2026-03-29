@@ -12,13 +12,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-//import lv.venta.model.base.BaseAuditEntity;
 
 @Getter
 @Setter
@@ -26,46 +26,40 @@ import lombok.ToString;
 @ToString
 @Table(name = "WatchEventsTable")
 @Entity
-public class WatchEvent   {
+public class WatchEvent {
 
-	// Fields | Dati
-	// =================
-	@Setter(value = AccessLevel.NONE)
-	@Id
-	@Column(name = "watch_event_id")
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long watchEventId;
+    @Setter(AccessLevel.NONE)
+    @Id
+    @Column(name = "watch_event_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long watchEventId;
 
-	@NotNull
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	@Column(name = "WatchedAt", nullable = false)
-	private LocalDate watchedAt;
+    @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name = "WatchedAt", nullable = false)
+    private LocalDate watchedAt;
 
-	@Column(name = "Notes", columnDefinition = "TEXT")
-	private String notes;
+    @Column(name = "Notes", columnDefinition = "TEXT")
+    private String notes;
 
-	// Connections | Saites
-	// =================
-	@ManyToOne
-	@JoinColumn(name = "user_id", nullable = false)
-	private AppUser user;
+    @NotBlank
+    @Column(name = "imdb_id", nullable = false)
+    private String imdbId;
 
-	@ManyToOne
-	@JoinColumn(name = "movie_id", nullable = false)
-	private Movie movie;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private AppUser user;
 
-	// Constructors | Konstruktori
-	// =================
-	public WatchEvent(AppUser user, Movie movie, LocalDate watchedAt, String notes) {
-		setUser(user);
-		setMovie(movie);
-		setWatchedAt(watchedAt);
-		setNotes(notes);
-	}
+    public WatchEvent(AppUser user, String imdbId, LocalDate watchedAt, String notes) {
+        setUser(user);
+        setImdbId(imdbId);
+        setWatchedAt(watchedAt);
+        setNotes(notes);
+    }
 
-	public WatchEvent(AppUser user, Movie movie, LocalDate watchedAt) {
-		setUser(user);
-		setMovie(movie);
-		setWatchedAt(watchedAt);
-	}
+    public WatchEvent(AppUser user, String imdbId, LocalDate watchedAt) {
+        setUser(user);
+        setImdbId(imdbId);
+        setWatchedAt(watchedAt);
+    }
 }

@@ -13,56 +13,50 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-//import lv.venta.model.base.BaseAuditEntity;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
 @Table(
-	name = "RatingsTable",
-	uniqueConstraints = @UniqueConstraint(columnNames = { "user_id", "movie_id" })
+    name = "RatingsTable",
+    uniqueConstraints = @UniqueConstraint(columnNames = { "user_id", "imdb_id" })
 )
 @Entity
 public class Rating {
 
-	// Fields | Dati
-	// =================
-	@Setter(value = AccessLevel.NONE)
-	@Id
-	@Column(name = "rating_id")
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long ratingId;
+    @Setter(AccessLevel.NONE)
+    @Id
+    @Column(name = "rating_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long ratingId;
 
-	@Min(1)
-	@Max(10)
-	@Column(name = "RatingValue", nullable = false)
-	private int ratingValue;
+    @Min(1)
+    @Max(10)
+    @Column(name = "RatingValue", nullable = false)
+    private int ratingValue;
 
-	@Column(name = "RatedAt")
-	private LocalDateTime ratedAt;
+    @Column(name = "RatedAt")
+    private LocalDateTime ratedAt;
 
-	// Connections | Saites
-	// =================
-	@ManyToOne
-	@JoinColumn(name = "user_id", nullable = false)
-	private AppUser user;
+    @NotBlank
+    @Column(name = "imdb_id", nullable = false)
+    private String imdbId;
 
-	@ManyToOne
-	@JoinColumn(name = "movie_id", nullable = false)
-	private Movie movie;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private AppUser user;
 
-	// Constructors | Konstruktori
-	// =================
-	public Rating(AppUser user, Movie movie, int ratingValue) {
-		setUser(user);
-		setMovie(movie);
-		setRatingValue(ratingValue);
-		setRatedAt(LocalDateTime.now());
-	}
+    public Rating(AppUser user, String imdbId, int ratingValue) {
+        setUser(user);
+        setImdbId(imdbId);
+        setRatingValue(ratingValue);
+        setRatedAt(LocalDateTime.now());
+    }
 }

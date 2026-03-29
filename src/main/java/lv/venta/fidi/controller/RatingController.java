@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
 
 import jakarta.validation.Valid;
+import lv.venta.fidi.dto.OmdbMovieDto;
 import lv.venta.fidi.model.AppUser;
-import lv.venta.fidi.model.Movie;
 import lv.venta.fidi.model.Rating;
 import lv.venta.fidi.repo.IAppUserRepo;
-import lv.venta.fidi.repo.IMovieRepo;
 import lv.venta.fidi.service.IRatingService;
+import lv.venta.fidi.service.OmdbClient;
 
 @Controller
 @RequestMapping("/ratings")
@@ -27,14 +27,17 @@ public class RatingController {
     private IAppUserRepo appUserRepo;
 
     @Autowired
-    private IMovieRepo movieRepo;
+    private OmdbClient omdbClient;
 
-    @GetMapping("/create/{movieId}")
-    public String showCreateForm(@PathVariable Long movieId, Model model) {
+    @GetMapping("/create/{imdbId}")
+    public String showCreateForm(@PathVariable String imdbId, Model model) {
         try {
             Rating rating = new Rating();
-            Movie movie = movieRepo.findById(movieId)
-                    .orElseThrow(() -> new Exception("Movie with ID " + movieId + " was not found"));
+            OmdbMovieDto movie = omdbClient.getByImdbId(imdbId);
+
+            if (movie == null || movie.getImdbID() == null || movie.getImdbID().isBlank()) {
+                throw new Exception("Movie with IMDb ID " + imdbId + " was not found");
+            }
 
             model.addAttribute("rating", rating);
             model.addAttribute("movie", movie);
@@ -49,12 +52,15 @@ public class RatingController {
     @PostMapping("/create")
     public String create(@Valid @ModelAttribute("rating") Rating rating,
                          BindingResult result,
-                         @RequestParam("movieId") Long movieId,
+                         @RequestParam("imdbId") String imdbId,
                          Principal principal,
                          Model model) {
         try {
-            Movie movie = movieRepo.findById(movieId)
-                    .orElseThrow(() -> new Exception("Movie with ID " + movieId + " was not found"));
+            OmdbMovieDto movie = omdbClient.getByImdbId(imdbId);
+
+            if (movie == null || movie.getImdbID() == null || movie.getImdbID().isBlank()) {
+                throw new Exception("Movie with IMDb ID " + imdbId + " was not found");
+            }
 
             if (result.hasErrors()) {
                 model.addAttribute("movie", movie);
@@ -64,7 +70,7 @@ public class RatingController {
             AppUser user = appUserRepo.findByEmail(principal.getName())
                     .orElseThrow(() -> new Exception("User was not found"));
 
-            ratingService.create(user.getUserId(), movieId, rating.getRatingValue());
+            ratingService.create(user.getUserId(), imdbId, rating.getRatingValue());
 
             return "redirect:/diary";
         } catch (Exception e) {
@@ -77,7 +83,11 @@ public class RatingController {
     public String showEditForm(@PathVariable Long id, Model model) {
         try {
             Rating rating = ratingService.retrieveById(id);
+            OmdbMovieDto movie = omdbClient.getByImdbId(rating.getImdbId());
+
             model.addAttribute("rating", rating);
+            model.addAttribute("movie", movie);
+
             return "rating-edit-page";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
@@ -92,6 +102,8 @@ public class RatingController {
                          Model model) {
         try {
             if (result.hasErrors()) {
+                OmdbMovieDto movie = omdbClient.getByImdbId(rating.getImdbId());
+                model.addAttribute("movie", movie);
                 return "rating-edit-page";
             }
 

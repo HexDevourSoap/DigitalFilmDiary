@@ -9,15 +9,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
 
 import jakarta.validation.Valid;
+import lv.venta.fidi.dto.OmdbMovieDto;
 import lv.venta.fidi.enums.WatchStatus;
 import lv.venta.fidi.model.AppUser;
-import lv.venta.fidi.model.Movie;
 import lv.venta.fidi.model.UserMovie;
 import lv.venta.fidi.repo.IAppUserRepo;
-import lv.venta.fidi.repo.IMovieRepo;
 import lv.venta.fidi.service.IRatingService;
 import lv.venta.fidi.service.IUserMovieService;
 import lv.venta.fidi.service.IWatchEventService;
+import lv.venta.fidi.service.OmdbClient;
 
 @Controller
 @RequestMapping("/diary")
@@ -36,7 +36,7 @@ public class DiaryController {
     private IAppUserRepo appUserRepo;
 
     @Autowired
-    private IMovieRepo movieRepo;
+    private OmdbClient omdbClient;
 
     @GetMapping
     public String retrieveUserDiary(Model model, Principal principal) {
@@ -55,12 +55,15 @@ public class DiaryController {
         }
     }
 
-    @GetMapping("/create/{movieId}")
-    public String showCreateForm(@PathVariable Long movieId, Model model) {
+    @GetMapping("/create/{imdbId}")
+    public String showCreateForm(@PathVariable String imdbId, Model model) {
         try {
             UserMovie userMovie = new UserMovie();
-            Movie movie = movieRepo.findById(movieId)
-                    .orElseThrow(() -> new Exception("Movie with ID " + movieId + " was not found"));
+            OmdbMovieDto movie = omdbClient.getByImdbId(imdbId);
+
+            if (movie == null || movie.getImdbID() == null || movie.getImdbID().isBlank()) {
+                throw new Exception("Movie with IMDb ID " + imdbId + " was not found");
+            }
 
             model.addAttribute("userMovie", userMovie);
             model.addAttribute("movie", movie);
@@ -76,12 +79,15 @@ public class DiaryController {
     @PostMapping("/create")
     public String create(@Valid @ModelAttribute("userMovie") UserMovie userMovie,
                          BindingResult result,
-                         @RequestParam("movieId") Long movieId,
+                         @RequestParam("imdbId") String imdbId,
                          Principal principal,
                          Model model) {
         try {
-            Movie movie = movieRepo.findById(movieId)
-                    .orElseThrow(() -> new Exception("Movie with ID " + movieId + " was not found"));
+            OmdbMovieDto movie = omdbClient.getByImdbId(imdbId);
+
+            if (movie == null || movie.getImdbID() == null || movie.getImdbID().isBlank()) {
+                throw new Exception("Movie with IMDb ID " + imdbId + " was not found");
+            }
 
             if (result.hasErrors()) {
                 model.addAttribute("movie", movie);
@@ -92,7 +98,7 @@ public class DiaryController {
             AppUser user = appUserRepo.findByEmail(principal.getName())
                     .orElseThrow(() -> new Exception("User was not found"));
 
-            userMovieService.create(user.getUserId(), movieId, userMovie.getStatus(), userMovie.getPlannedDate());
+            userMovieService.create(user.getUserId(), imdbId, userMovie.getStatus(), userMovie.getPlannedDate());
 
             return "redirect:/diary";
         } catch (Exception e) {
@@ -105,7 +111,10 @@ public class DiaryController {
     public String showEditForm(@PathVariable Long id, Model model) {
         try {
             UserMovie userMovie = userMovieService.retrieveById(id);
+            OmdbMovieDto movie = omdbClient.getByImdbId(userMovie.getImdbId());
+
             model.addAttribute("userMovie", userMovie);
+            model.addAttribute("movie", movie);
             model.addAttribute("statuses", WatchStatus.values());
 
             return "diary-edit-page";
@@ -122,6 +131,8 @@ public class DiaryController {
                          Model model) {
         try {
             if (result.hasErrors()) {
+                OmdbMovieDto movie = omdbClient.getByImdbId(userMovie.getImdbId());
+                model.addAttribute("movie", movie);
                 model.addAttribute("statuses", WatchStatus.values());
                 return "diary-edit-page";
             }

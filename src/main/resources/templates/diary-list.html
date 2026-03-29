@@ -15,13 +15,12 @@
 
     <div th:each="entry : ${diaryEntries}">
         <hr>
-        <h3 th:text="${entry.movie.title}">Movie Title</h3>
+        <h3 th:text="${entry.imdbId}">tt1234567</h3>
         <p>Status: <span th:text="${entry.status}">WATCHED</span></p>
         <p th:if="${entry.plannedDate != null}">
             Planned date: <span th:text="${entry.plannedDate}">2026-03-20</span>
         </p>
 
-        <a th:href="@{/movies/{id}(id=${entry.movie.movieId})}">View movie</a>
         <a th:href="@{/diary/update/{id}(id=${entry.userMovieId})}">Edit</a>
         <a th:href="@{/diary/delete/{id}(id=${entry.userMovieId})}">Delete</a>
     </div>
@@ -33,7 +32,7 @@
 
     <div th:each="event : ${watchEvents}">
         <hr>
-        <h3 th:text="${event.movie.title}">Movie Title</h3>
+        <h3 th:text="${event.imdbId}">tt1234567</h3>
         <p>Watched at: <span th:text="${event.watchedAt}">2026-03-20</span></p>
         <p th:if="${event.notes != null and !#strings.isEmpty(event.notes)}">
             Notes: <span th:text="${event.notes}">Great movie</span>
@@ -50,7 +49,7 @@
 
     <div th:each="rating : ${ratings}">
         <hr>
-        <h3 th:text="${rating.movie.title}">Movie Title</h3>
+        <h3 th:text="${rating.imdbId}">tt1234567</h3>
         <p>Rating: <span th:text="${rating.ratingValue}">8</span>/10</p>
         <p>Rated at: <span th:text="${rating.ratedAt}">2026-03-20T12:00</span></p>
 

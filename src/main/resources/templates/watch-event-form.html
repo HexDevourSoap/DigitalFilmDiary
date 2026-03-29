@@ -13,7 +13,7 @@
     </div>
 
     <form th:action="@{/watch-events/create}" th:object="${watchEvent}" method="post">
-        <input type="hidden" name="movieId" th:value="${movie.movieId}" />
+        <input type="hidden" name="imdbId" th:value="${movie.imdbID}" />
 
         <div>
             <label for="watchedAt">Watched at:</label>
@@ -33,7 +33,7 @@
     </form>
 
     <br>
-    <a th:href="@{/movies/{id}(id=${movie.movieId})}">Back to movie</a>
+    <a href="/movies">Back to movies</a>
 
 </body>
 </html>

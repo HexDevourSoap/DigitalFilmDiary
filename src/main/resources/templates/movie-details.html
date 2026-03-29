@@ -41,9 +41,9 @@
             <li th:each="genre : ${movie.genres}" th:text="${genre.name}">Action</li>
         </ul>
 
-        <a th:href="@{/diary/create/{movieId}(movieId=${movie.movieId})}">Add to diary</a>
-        <a th:href="@{/watch-events/create/{movieId}(movieId=${movie.movieId})}">Add watch event</a>
-        <a th:href="@{/ratings/create/{movieId}(movieId=${movie.movieId})}">Add rating</a>
+        <a th:href="@{/diary/create/{imdbId}(imdbId=${movie.imdbId})}">Add to diary</a>
+        <a th:href="@{/watch-events/create/{imdbId}(imdbId=${movie.imdbId})}">Add watch event</a>
+        <a th:href="@{/ratings/create/{imdbId}(imdbId=${movie.imdbId})}">Add rating</a>
     </div>
 
     <br>

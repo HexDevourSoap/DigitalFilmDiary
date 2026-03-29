@@ -1,7 +1,9 @@
 package lv.venta.fidi;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collection;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -10,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import lv.venta.fidi.dto.OmdbMovieDto;
 import lv.venta.fidi.enums.WatchStatus;
 import lv.venta.fidi.model.AppUser;
 import lv.venta.fidi.model.Genre;
@@ -25,6 +28,7 @@ import lv.venta.fidi.repo.IMyAuthorityRepo;
 import lv.venta.fidi.repo.IRatingRepo;
 import lv.venta.fidi.repo.IUserMovieRepo;
 import lv.venta.fidi.repo.IWatchEventRepo;
+import lv.venta.fidi.service.OmdbClient;
 
 @SpringBootApplication
 public class FidiApplication {
@@ -41,7 +45,8 @@ public class FidiApplication {
             IAppUserRepo userRepo,
             IRatingRepo ratingRepo,
             IUserMovieRepo userMovieRepo,
-            IWatchEventRepo watchEventRepo) {
+            IWatchEventRepo watchEventRepo,
+            OmdbClient omdbClient) {
 
         return args -> {
 
@@ -90,124 +95,171 @@ public class FidiApplication {
                     .orElseGet(() -> genreRepo.save(new Genre("Comedy")));
 
             // -------------------------
-            // Movies
+            // Movies cache / metadata from OMDb
             // -------------------------
-            Movie movie1 = movieRepo.findByImdbId("tt0133093")
-                    .orElseGet(() -> {
-                        Movie m = new Movie(
-                                "tt0133093",
-                                "The Matrix",
-                                1999,
-                                136,
-                                "A computer hacker learns the truth about reality and his role in the war against its controllers.");
-                        m.setPosterUrl("https://m.media-amazon.com/images/M/MV5BNzQzOTk3NTAt.jpg");
-                        m.setGenres(Arrays.asList(action, sciFi));
-                        return movieRepo.save(m);
-                    });
+            Movie movie1 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0133093",
+                    Arrays.asList(action, sciFi));
 
-            Movie movie2 = movieRepo.findByImdbId("tt1375666")
-                    .orElseGet(() -> {
-                        Movie m = new Movie(
-                                "tt1375666",
-                                "Inception",
-                                2010,
-                                148,
-                                "A thief who enters dreams is given a chance at redemption if he can perform inception.");
-                        m.setPosterUrl("https://m.media-amazon.com/images/M/MV5BMmEz.jpg");
-                        m.setGenres(Arrays.asList(action, sciFi, thriller));
-                        return movieRepo.save(m);
-                    });
+            Movie movie2 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt1375666",
+                    Arrays.asList(action, sciFi, thriller));
 
-            Movie movie3 = movieRepo.findByImdbId("tt0816692")
-                    .orElseGet(() -> {
-                        Movie m = new Movie(
-                                "tt0816692",
-                                "Interstellar",
-                                2014,
-                                169,
-                                "A team travels through a wormhole in space in an attempt to ensure humanity's survival.");
-                        m.setPosterUrl("https://m.media-amazon.com/images/M/MV5BZjdkOTU3.jpg");
-                        m.setGenres(Arrays.asList(drama, sciFi));
-                        return movieRepo.save(m);
-                    });
+            Movie movie3 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0816692",
+                    Arrays.asList(drama, sciFi));
 
-            Movie movie4 = movieRepo.findByImdbId("tt0110912")
-                    .orElseGet(() -> {
-                        Movie m = new Movie(
-                                "tt0110912",
-                                "Pulp Fiction",
-                                1994,
-                                154,
-                                "The lives of several criminals intertwine in a series of violent and darkly comic incidents.");
-                        m.setPosterUrl("https://m.media-amazon.com/images/M/MV5BNGNhMDIz.jpg");
-                        m.setGenres(Arrays.asList(drama, thriller, comedy));
-                        return movieRepo.save(m);
-                    });
+            Movie movie4 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0110912",
+                    Arrays.asList(drama, thriller, comedy));
 
             // -------------------------
             // UserMovie diary entries
             // -------------------------
-            if (!userMovieRepo.existsByUserAndMovie(user1, movie1)) {
-                userMovieRepo.save(new UserMovie(user1, movie1, WatchStatus.WATCHED));
+            if (!userMovieRepo.existsByUserAndImdbId(user1, movie1.getImdbId())) {
+                userMovieRepo.save(new UserMovie(user1, movie1.getImdbId(), WatchStatus.WATCHED));
             }
 
-            if (!userMovieRepo.existsByUserAndMovie(user1, movie2)) {
-                userMovieRepo.save(new UserMovie(user1, movie2, WatchStatus.PLAN_TO_WATCH, LocalDate.now().plusDays(3)));
+            if (!userMovieRepo.existsByUserAndImdbId(user1, movie2.getImdbId())) {
+                userMovieRepo.save(new UserMovie(
+                        user1,
+                        movie2.getImdbId(),
+                        WatchStatus.PLAN_TO_WATCH,
+                        LocalDate.now().plusDays(3)
+                ));
             }
 
-            if (!userMovieRepo.existsByUserAndMovie(user2, movie3)) {
-                userMovieRepo.save(new UserMovie(user2, movie3, WatchStatus.WATCHING));
+            if (!userMovieRepo.existsByUserAndImdbId(user2, movie3.getImdbId())) {
+                userMovieRepo.save(new UserMovie(user2, movie3.getImdbId(), WatchStatus.WATCHING));
             }
 
-            if (!userMovieRepo.existsByUserAndMovie(user2, movie4)) {
-                userMovieRepo.save(new UserMovie(user2, movie4, WatchStatus.WATCHED));
+            if (!userMovieRepo.existsByUserAndImdbId(user2, movie4.getImdbId())) {
+                userMovieRepo.save(new UserMovie(user2, movie4.getImdbId(), WatchStatus.WATCHED));
             }
 
             // -------------------------
             // Ratings
             // -------------------------
-            if (!ratingRepo.existsByUserAndMovie(user1, movie1)) {
-                ratingRepo.save(new Rating(user1, movie1, 10));
+            if (!ratingRepo.existsByUserAndImdbId(user1, movie1.getImdbId())) {
+                ratingRepo.save(new Rating(user1, movie1.getImdbId(), 10));
             }
 
-            if (!ratingRepo.existsByUserAndMovie(user2, movie4)) {
-                ratingRepo.save(new Rating(user2, movie4, 9));
+            if (!ratingRepo.existsByUserAndImdbId(user2, movie4.getImdbId())) {
+                ratingRepo.save(new Rating(user2, movie4.getImdbId(), 9));
             }
 
-            if (!ratingRepo.existsByUserAndMovie(user2, movie3)) {
-                ratingRepo.save(new Rating(user2, movie3, 8));
+            if (!ratingRepo.existsByUserAndImdbId(user2, movie3.getImdbId())) {
+                ratingRepo.save(new Rating(user2, movie3.getImdbId(), 8));
             }
 
             // -------------------------
             // Watch events
             // -------------------------
-            if (watchEventRepo.findByUserAndMovie(user1, movie1).isEmpty()) {
+            if (watchEventRepo.findByUserAndImdbId(user1, movie1.getImdbId()).isEmpty()) {
                 watchEventRepo.save(new WatchEvent(
                         user1,
-                        movie1,
+                        movie1.getImdbId(),
                         LocalDate.now().minusDays(7),
-                        "Mind-blowing sci-fi. Definitely rewatching."));
+                        "Mind-blowing sci-fi. Definitely rewatching."
+                ));
             }
 
-            if (watchEventRepo.findByUserAndMovie(user2, movie4).isEmpty()) {
+            if (watchEventRepo.findByUserAndImdbId(user2, movie4.getImdbId()).isEmpty()) {
                 watchEventRepo.save(new WatchEvent(
                         user2,
-                        movie4,
+                        movie4.getImdbId(),
                         LocalDate.now().minusDays(2),
-                        "Great dialogue and very memorable scenes."));
+                        "Great dialogue and very memorable scenes."
+                ));
             }
 
-            if (watchEventRepo.findByUserAndMovie(user2, movie3).isEmpty()) {
+            if (watchEventRepo.findByUserAndImdbId(user2, movie3.getImdbId()).isEmpty()) {
                 watchEventRepo.save(new WatchEvent(
                         user2,
-                        movie3,
+                        movie3.getImdbId(),
                         LocalDate.now().minusDays(1),
-                        "Watched half of it, finishing later."));
+                        "Watched half of it, finishing later."
+                ));
             }
 
             System.out.println("Seed data loaded.");
             System.out.println("Login user: user1@moviediary.lv / user12345");
             System.out.println("Login admin: admin@moviediary.lv / admin12345");
         };
+    }
+
+    private Movie getOrUpdateMovieFromOmdb(
+            IMovieRepo movieRepo,
+            OmdbClient omdbClient,
+            String imdbId,
+            Collection<Genre> genres) throws Exception {
+
+        OmdbMovieDto dto = omdbClient.getByImdbId(imdbId);
+
+        if (dto == null || dto.getImdbID() == null || dto.getImdbID().isBlank()) {
+            throw new Exception("Could not load movie from OMDb for IMDb ID: " + imdbId);
+        }
+
+        Movie movie = movieRepo.findByImdbId(imdbId)
+                .orElse(new Movie(
+                        dto.getImdbID(),
+                        dto.getTitle(),
+                        null,
+                        null,
+                        dto.getPlot()
+                ));
+
+        movie.setTitle(dto.getTitle());
+        movie.setDescription(dto.getPlot());
+        movie.setPosterUrl("N/A".equals(dto.getPoster()) ? null : dto.getPoster());
+        movie.setReleaseYear(parseYear(dto.getYear()));
+        movie.setRuntimeMin(parseRuntime(dto.getRuntime()));
+        movie.setImdbRating(parseRating(dto.getImdbRating()));
+        movie.setGenres(genres);
+
+        return movieRepo.save(movie);
+    }
+
+    private Integer parseYear(String year) {
+        try {
+            if (year != null && !year.isBlank()) {
+                String cleaned = year.replaceAll("[^0-9]", "");
+                if (cleaned.length() >= 4) {
+                    return Integer.parseInt(cleaned.substring(0, 4));
+                }
+            }
+        } catch (Exception e) {
+            return null;
+        }
+        return null;
+    }
+
+    private Integer parseRuntime(String runtime) {
+        try {
+            if (runtime != null && !runtime.isBlank()) {
+                String cleaned = runtime.replaceAll("[^0-9]", "");
+                if (!cleaned.isBlank()) {
+                    return Integer.parseInt(cleaned);
+                }
+            }
+        } catch (Exception e) {
+            return null;
+        }
+        return null;
+    }
+
+    private BigDecimal parseRating(String imdbRating) {
+        try {
+            if (imdbRating != null && !imdbRating.isBlank() && !"N/A".equals(imdbRating)) {
+                return new BigDecimal(imdbRating);
+            }
+        } catch (Exception e) {
+            return null;
+        }
+        return null;
     }
 }
