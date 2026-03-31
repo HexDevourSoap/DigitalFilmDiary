@@ -14,6 +14,8 @@
 
     <form th:action="@{/diary/update/{id}(id=${userMovie.userMovieId})}" th:object="${userMovie}" method="post">
 
+        <input type="hidden" th:field="*{imdbId}" />
+
         <div>
             <label for="status">Status:</label>
             <select id="status" th:field="*{status}">
@@ -29,6 +31,13 @@
         <div>
             <label for="plannedDate">Planned date:</label>
             <input type="date" id="plannedDate" th:field="*{plannedDate}">
+        </div>
+
+        <br>
+
+        <div>
+            <label for="notes">Notes:</label><br>
+            <textarea id="notes" th:field="*{notes}" rows="6" cols="50"></textarea>
         </div>
 
         <br>

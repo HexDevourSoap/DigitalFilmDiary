@@ -1,18 +1,22 @@
 package lv.venta.fidi.controller;
 
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import lv.venta.fidi.dto.OmdbMovieDto;
 import lv.venta.fidi.enums.WatchStatus;
 import lv.venta.fidi.model.AppUser;
+import lv.venta.fidi.model.Rating;
 import lv.venta.fidi.model.UserMovie;
+import lv.venta.fidi.model.WatchEvent;
 import lv.venta.fidi.repo.IAppUserRepo;
 import lv.venta.fidi.service.IRatingService;
 import lv.venta.fidi.service.IUserMovieService;
@@ -44,9 +48,28 @@ public class DiaryController {
             AppUser user = appUserRepo.findByEmail(principal.getName())
                     .orElseThrow(() -> new Exception("User was not found"));
 
-            model.addAttribute("diaryEntries", userMovieService.retrieveByUserId(user.getUserId()));
-            model.addAttribute("watchEvents", watchEventService.retrieveByUserId(user.getUserId()));
-            model.addAttribute("ratings", ratingService.retrieveByUserId(user.getUserId()));
+            var diaryEntries = userMovieService.retrieveByUserId(user.getUserId());
+            var watchEvents = watchEventService.retrieveByUserId(user.getUserId());
+            var ratings = ratingService.retrieveByUserId(user.getUserId());
+
+            Map<String, OmdbMovieDto> movieMap = new HashMap<>();
+
+            for (UserMovie entry : diaryEntries) {
+                movieMap.put(entry.getImdbId(), omdbClient.getByImdbId(entry.getImdbId()));
+            }
+
+            for (WatchEvent event : watchEvents) {
+                movieMap.put(event.getImdbId(), omdbClient.getByImdbId(event.getImdbId()));
+            }
+
+            for (Rating rating : ratings) {
+                movieMap.put(rating.getImdbId(), omdbClient.getByImdbId(rating.getImdbId()));
+            }
+
+            model.addAttribute("diaryEntries", diaryEntries);
+            model.addAttribute("watchEvents", watchEvents);
+            model.addAttribute("ratings", ratings);
+            model.addAttribute("movieMap", movieMap);
 
             return "diary-list";
         } catch (Exception e) {
@@ -98,7 +121,13 @@ public class DiaryController {
             AppUser user = appUserRepo.findByEmail(principal.getName())
                     .orElseThrow(() -> new Exception("User was not found"));
 
-            userMovieService.create(user.getUserId(), imdbId, userMovie.getStatus(), userMovie.getPlannedDate());
+            userMovieService.create(
+                    user.getUserId(),
+                    imdbId,
+                    userMovie.getStatus(),
+                    userMovie.getPlannedDate(),
+                    userMovie.getNotes()
+            );
 
             return "redirect:/diary";
         } catch (Exception e) {
@@ -137,7 +166,12 @@ public class DiaryController {
                 return "diary-edit-page";
             }
 
-            userMovieService.update(id, userMovie.getStatus(), userMovie.getPlannedDate());
+            userMovieService.update(
+                    id,
+                    userMovie.getStatus(),
+                    userMovie.getPlannedDate(),
+                    userMovie.getNotes()
+            );
             return "redirect:/diary";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());

@@ -24,7 +24,7 @@ public class UserMovieServiceImpl implements IUserMovieService {
     private IAppUserRepo appUserRepo;
 
     @Override
-    public void create(Long userId, String imdbId, WatchStatus status, LocalDate plannedDate) throws Exception {
+    public void create(Long userId, String imdbId, WatchStatus status, LocalDate plannedDate, String notes) throws Exception {
 
         if (userId == null || userId < 0) {
             throw new Exception("User ID cannot be null or negative");
@@ -45,12 +45,12 @@ public class UserMovieServiceImpl implements IUserMovieService {
             throw new Exception("This user already has this movie in diary");
         }
 
-        UserMovie userMovie = new UserMovie(user, imdbId, status, plannedDate);
+        UserMovie userMovie = new UserMovie(user, imdbId, status, plannedDate, notes);
         userMovieRepo.save(userMovie);
     }
 
     @Override
-    public void update(Long userMovieId, WatchStatus status, LocalDate plannedDate) throws Exception {
+    public void update(Long userMovieId, WatchStatus status, LocalDate plannedDate, String notes) throws Exception {
 
         if (userMovieId == null || userMovieId < 0) {
             throw new Exception("UserMovie ID cannot be null or negative");
@@ -65,6 +65,7 @@ public class UserMovieServiceImpl implements IUserMovieService {
 
         userMovie.setStatus(status);
         userMovie.setPlannedDate(plannedDate);
+        userMovie.setNotes(notes);
 
         userMovieRepo.save(userMovie);
     }

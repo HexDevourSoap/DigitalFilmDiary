@@ -54,6 +54,9 @@ public class UserMovie {
     @Column(name = "imdb_id", nullable = false)
     private String imdbId;
 
+    @Column(name = "Notes", columnDefinition = "TEXT")
+    private String notes;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @ToString.Exclude
@@ -64,6 +67,14 @@ public class UserMovie {
         setImdbId(imdbId);
         setStatus(status);
         setPlannedDate(plannedDate);
+    }
+
+    public UserMovie(AppUser user, String imdbId, WatchStatus status, LocalDate plannedDate, String notes) {
+        setUser(user);
+        setImdbId(imdbId);
+        setStatus(status);
+        setPlannedDate(plannedDate);
+        setNotes(notes);
     }
 
     public UserMovie(AppUser user, String imdbId, WatchStatus status) {

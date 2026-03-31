@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Recommendations</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+    <h1>Recommended for You</h1>
+
+    <div th:if="${recommendations == null or #lists.isEmpty(recommendations)}">
+        <p>No recommendations available yet.</p>
+    </div>
+
+    <div th:each="rec : ${recommendations}">
+        <hr>
+
+        <h2 th:text="${rec.movie.title}">Movie Title</h2>
+
+        <img th:if="${rec.movie.posterUrl != null and !#strings.isEmpty(rec.movie.posterUrl)}"
+             th:src="${rec.movie.posterUrl}"
+             alt="Poster"
+             width="150">
+
+        <p>
+            <strong>IMDb rating:</strong>
+            <span th:text="${rec.movie.imdbRating}">8.5</span>
+        </p>
+
+        <p>
+            <strong>Score:</strong>
+            <span th:text="${rec.score}">5.0</span>
+        </p>
+
+        <p>
+            <strong>Reason:</strong>
+            <span th:text="${rec.reason}">Because you like Sci-Fi</span>
+        </p>
+
+        <a th:href="@{/movies/{id}(id=${rec.movie.movieId})}">View movie</a>
+        <a th:href="@{/diary/create/{imdbId}(imdbId=${rec.movie.imdbId})}">Add to diary</a>
+    </div>
+
+    <br>
+    <a href="/">Back to home</a>
+
+</body>
+</html>

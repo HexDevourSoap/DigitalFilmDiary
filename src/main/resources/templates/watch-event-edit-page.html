@@ -16,6 +16,8 @@
           th:object="${watchEvent}"
           method="post">
 
+        <input type="hidden" th:field="*{imdbId}" />
+
         <div>
             <label for="watchedAt">Watched at:</label>
             <input type="date" id="watchedAt" th:field="*{watchedAt}">

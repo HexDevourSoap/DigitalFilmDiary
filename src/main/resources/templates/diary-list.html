@@ -15,10 +15,24 @@
 
     <div th:each="entry : ${diaryEntries}">
         <hr>
-        <h3 th:text="${entry.imdbId}">tt1234567</h3>
+
+        <h3 th:text="${movieMap[entry.imdbId] != null ? movieMap[entry.imdbId].title : entry.imdbId}">
+            Movie Title
+        </h3>
+
+        <img th:if="${movieMap[entry.imdbId] != null and movieMap[entry.imdbId].poster != null and !#strings.isEmpty(movieMap[entry.imdbId].poster) and movieMap[entry.imdbId].poster != 'N/A'}"
+             th:src="${movieMap[entry.imdbId].poster}"
+             alt="Poster"
+             width="120">
+
         <p>Status: <span th:text="${entry.status}">WATCHED</span></p>
+
         <p th:if="${entry.plannedDate != null}">
             Planned date: <span th:text="${entry.plannedDate}">2026-03-20</span>
+        </p>
+
+        <p th:if="${entry.notes != null and !#strings.isEmpty(entry.notes)}">
+            Notes: <span th:text="${entry.notes}">My thoughts</span>
         </p>
 
         <a th:href="@{/diary/update/{id}(id=${entry.userMovieId})}">Edit</a>
@@ -32,8 +46,18 @@
 
     <div th:each="event : ${watchEvents}">
         <hr>
-        <h3 th:text="${event.imdbId}">tt1234567</h3>
+
+        <h3 th:text="${movieMap[event.imdbId] != null ? movieMap[event.imdbId].title : event.imdbId}">
+            Movie Title
+        </h3>
+
+        <img th:if="${movieMap[event.imdbId] != null and movieMap[event.imdbId].poster != null and !#strings.isEmpty(movieMap[event.imdbId].poster) and movieMap[event.imdbId].poster != 'N/A'}"
+             th:src="${movieMap[event.imdbId].poster}"
+             alt="Poster"
+             width="120">
+
         <p>Watched at: <span th:text="${event.watchedAt}">2026-03-20</span></p>
+
         <p th:if="${event.notes != null and !#strings.isEmpty(event.notes)}">
             Notes: <span th:text="${event.notes}">Great movie</span>
         </p>
@@ -49,7 +73,16 @@
 
     <div th:each="rating : ${ratings}">
         <hr>
-        <h3 th:text="${rating.imdbId}">tt1234567</h3>
+
+        <h3 th:text="${movieMap[rating.imdbId] != null ? movieMap[rating.imdbId].title : rating.imdbId}">
+            Movie Title
+        </h3>
+
+        <img th:if="${movieMap[rating.imdbId] != null and movieMap[rating.imdbId].poster != null and !#strings.isEmpty(movieMap[rating.imdbId].poster) and movieMap[rating.imdbId].poster != 'N/A'}"
+             th:src="${movieMap[rating.imdbId].poster}"
+             alt="Poster"
+             width="120">
+
         <p>Rating: <span th:text="${rating.ratingValue}">8</span>/10</p>
         <p>Rated at: <span th:text="${rating.ratedAt}">2026-03-20T12:00</span></p>
 
