@@ -42,6 +42,13 @@
 
         <br>
 
+        <div>
+            <label for="ratingValue">Your rating (1-10):</label>
+            <input type="number" id="ratingValue" name="ratingValue" min="1" max="10" th:value="${ratingValue}">
+        </div>
+
+        <br>
+
         <button type="submit">Update entry</button>
     </form>
 

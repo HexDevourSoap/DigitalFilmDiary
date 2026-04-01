@@ -53,6 +53,7 @@ public class DiaryController {
             var ratings = ratingService.retrieveByUserId(user.getUserId());
 
             Map<String, OmdbMovieDto> movieMap = new HashMap<>();
+            Map<String, Rating> ratingMap = new HashMap<>();
 
             for (UserMovie entry : diaryEntries) {
                 movieMap.put(entry.getImdbId(), omdbClient.getByImdbId(entry.getImdbId()));
@@ -64,12 +65,13 @@ public class DiaryController {
 
             for (Rating rating : ratings) {
                 movieMap.put(rating.getImdbId(), omdbClient.getByImdbId(rating.getImdbId()));
+                ratingMap.put(rating.getImdbId(), rating);
             }
 
             model.addAttribute("diaryEntries", diaryEntries);
             model.addAttribute("watchEvents", watchEvents);
-            model.addAttribute("ratings", ratings);
             model.addAttribute("movieMap", movieMap);
+            model.addAttribute("ratingMap", ratingMap);
 
             return "diary-list";
         } catch (Exception e) {
@@ -91,6 +93,7 @@ public class DiaryController {
             model.addAttribute("userMovie", userMovie);
             model.addAttribute("movie", movie);
             model.addAttribute("statuses", WatchStatus.values());
+            model.addAttribute("ratingValue", null);
 
             return "diary-form";
         } catch (Exception e) {
@@ -103,6 +106,7 @@ public class DiaryController {
     public String create(@Valid @ModelAttribute("userMovie") UserMovie userMovie,
                          BindingResult result,
                          @RequestParam("imdbId") String imdbId,
+                         @RequestParam(name = "ratingValue", required = false) Integer ratingValue,
                          Principal principal,
                          Model model) {
         try {
@@ -115,6 +119,7 @@ public class DiaryController {
             if (result.hasErrors()) {
                 model.addAttribute("movie", movie);
                 model.addAttribute("statuses", WatchStatus.values());
+                model.addAttribute("ratingValue", ratingValue);
                 return "diary-form";
             }
 
@@ -129,6 +134,13 @@ public class DiaryController {
                     userMovie.getNotes()
             );
 
+            if (ratingValue != null) {
+                if (ratingValue < 1 || ratingValue > 10) {
+                    throw new Exception("Rating value must be between 1 and 10");
+                }
+                ratingService.create(user.getUserId(), imdbId, ratingValue);
+            }
+
             return "redirect:/diary";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
@@ -137,14 +149,20 @@ public class DiaryController {
     }
 
     @GetMapping("/update/{id}")
-    public String showEditForm(@PathVariable Long id, Model model) {
+    public String showEditForm(@PathVariable Long id, Model model, Principal principal) {
         try {
             UserMovie userMovie = userMovieService.retrieveById(id);
             OmdbMovieDto movie = omdbClient.getByImdbId(userMovie.getImdbId());
 
+            AppUser user = appUserRepo.findByEmail(principal.getName())
+                    .orElseThrow(() -> new Exception("User was not found"));
+
+            var existingRating = ratingService.findByUserIdAndImdbId(user.getUserId(), userMovie.getImdbId());
+
             model.addAttribute("userMovie", userMovie);
             model.addAttribute("movie", movie);
             model.addAttribute("statuses", WatchStatus.values());
+            model.addAttribute("ratingValue", existingRating.isPresent() ? existingRating.get().getRatingValue() : null);
 
             return "diary-edit-page";
         } catch (Exception e) {
@@ -157,14 +175,20 @@ public class DiaryController {
     public String update(@PathVariable Long id,
                          @Valid @ModelAttribute("userMovie") UserMovie userMovie,
                          BindingResult result,
+                         @RequestParam(name = "ratingValue", required = false) Integer ratingValue,
+                         Principal principal,
                          Model model) {
         try {
             if (result.hasErrors()) {
                 OmdbMovieDto movie = omdbClient.getByImdbId(userMovie.getImdbId());
                 model.addAttribute("movie", movie);
                 model.addAttribute("statuses", WatchStatus.values());
+                model.addAttribute("ratingValue", ratingValue);
                 return "diary-edit-page";
             }
+
+            AppUser user = appUserRepo.findByEmail(principal.getName())
+                    .orElseThrow(() -> new Exception("User was not found"));
 
             userMovieService.update(
                     id,
@@ -172,6 +196,21 @@ public class DiaryController {
                     userMovie.getPlannedDate(),
                     userMovie.getNotes()
             );
+
+            var existingRating = ratingService.findByUserIdAndImdbId(user.getUserId(), userMovie.getImdbId());
+
+            if (ratingValue != null) {
+                if (ratingValue < 1 || ratingValue > 10) {
+                    throw new Exception("Rating value must be between 1 and 10");
+                }
+
+                if (existingRating.isPresent()) {
+                    ratingService.update(existingRating.get().getRatingId(), ratingValue);
+                } else {
+                    ratingService.create(user.getUserId(), userMovie.getImdbId(), ratingValue);
+                }
+            }
+
             return "redirect:/diary";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());

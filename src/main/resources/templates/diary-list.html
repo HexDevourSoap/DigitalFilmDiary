@@ -35,6 +35,14 @@
             Notes: <span th:text="${entry.notes}">My thoughts</span>
         </p>
 
+        <p th:if="${ratingMap[entry.imdbId] != null}">
+            Your rating: <span th:text="${ratingMap[entry.imdbId].ratingValue}">8</span>/10
+        </p>
+
+        <p th:if="${ratingMap[entry.imdbId] == null}">
+            Your rating: not rated yet
+        </p>
+
         <a th:href="@{/diary/update/{id}(id=${entry.userMovieId})}">Edit</a>
         <a th:href="@{/diary/delete/{id}(id=${entry.userMovieId})}">Delete</a>
     </div>
@@ -64,29 +72,6 @@
 
         <a th:href="@{/watch-events/update/{id}(id=${event.watchEventId})}">Edit watch event</a>
         <a th:href="@{/watch-events/delete/{id}(id=${event.watchEventId})}">Delete watch event</a>
-    </div>
-
-    <h2>Ratings</h2>
-    <div th:if="${ratings == null or #lists.isEmpty(ratings)}">
-        <p>No ratings yet.</p>
-    </div>
-
-    <div th:each="rating : ${ratings}">
-        <hr>
-
-        <h3 th:text="${movieMap[rating.imdbId] != null ? movieMap[rating.imdbId].title : rating.imdbId}">
-            Movie Title
-        </h3>
-
-        <img th:if="${movieMap[rating.imdbId] != null and movieMap[rating.imdbId].poster != null and !#strings.isEmpty(movieMap[rating.imdbId].poster) and movieMap[rating.imdbId].poster != 'N/A'}"
-             th:src="${movieMap[rating.imdbId].poster}"
-             alt="Poster"
-             width="120">
-
-        <p>Rating: <span th:text="${rating.ratingValue}">8</span>/10</p>
-        <p>Rated at: <span th:text="${rating.ratedAt}">2026-03-20T12:00</span></p>
-
-        <a th:href="@{/ratings/update/{id}(id=${rating.ratingId})}">Edit rating</a>
     </div>
 
     <br>
