@@ -10,12 +10,11 @@ public class OmdbMovieDto {
     private String imdbID;
     private String Response;
     private String Runtime;
+    private String Genre;
 
-     
     public OmdbMovieDto() {
     }
 
-    
     public String getTitle() {
         return Title;
     }
@@ -73,10 +72,18 @@ public class OmdbMovieDto {
     }
 
     public String getRuntime() {
-    return Runtime;
+        return Runtime;
     }
 
     public void setRuntime(String runtime) {
         Runtime = runtime;
+    }
+
+    public String getGenre() {
+        return Genre;
+    }
+
+    public void setGenre(String genre) {
+        Genre = genre;
     }
 }

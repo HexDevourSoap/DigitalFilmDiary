@@ -16,7 +16,7 @@
     <a th:href="@{/movies}">Browse movies</a> |
     <a th:href="@{/diary}">My diary</a> |
     <a th:href="@{/recommendations}">Recommendations</a> |
-    
+
     <span sec:authorize="isAnonymous()">
         <a th:href="@{/login}">Login</a>
     </span>
@@ -35,6 +35,13 @@
 
 <hr>
 
+<form th:action="@{/movies/search}" method="get">
+    <input type="text" name="query" placeholder="Search movies...">
+    <button type="submit">Search</button>
+</form>
+
+<hr>
+
 <h2>Trending Movies</h2>
 
 <div th:if="${movies == null or #lists.isEmpty(movies)}">
@@ -45,15 +52,23 @@
 
     <div th:each="m : ${movies}" style="width:150px; text-align:center;">
 
-        <a th:href="@{/movies/{id}(id=${m.movieId})}">
+        <a th:href="@{/movies/{id}(id=${m.movieId})}" style="text-decoration:none; color:inherit;">
 
             <img th:if="${m.posterUrl != null and !#strings.isEmpty(m.posterUrl)}"
                  th:src="${m.posterUrl}"
                  width="120"
-                 alt="Poster"/>
+                 alt="Poster"
+                 style="display:block; margin:0 auto 10px auto;"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+
+            <div th:if="${m.posterUrl != null and !#strings.isEmpty(m.posterUrl)}"
+                 style="display:none; width:120px; height:180px; background:#ddd; margin:0 auto 10px auto; align-items:center; justify-content:center;">
+                No poster
+            </div>
 
             <div th:if="${m.posterUrl == null or #strings.isEmpty(m.posterUrl)}"
-                 style="width:120px; height:180px; background:#ccc;">
+                 style="width:120px; height:180px; background:#ddd; margin:0 auto 10px auto; display:flex; align-items:center; justify-content:center;">
+                No poster
             </div>
 
             <p th:text="${m.title}">Movie Title</p>

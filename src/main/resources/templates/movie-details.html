@@ -12,7 +12,18 @@
         <img th:if="${movie.posterUrl != null and !#strings.isEmpty(movie.posterUrl)}"
              th:src="${movie.posterUrl}"
              alt="Poster"
-             width="200">
+             width="200"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+
+        <div th:if="${movie.posterUrl != null and !#strings.isEmpty(movie.posterUrl)}"
+             style="display:none; width:200px; height:300px; background:#ddd; align-items:center; justify-content:center;">
+            No poster
+        </div>
+
+        <div th:if="${movie.posterUrl == null or #strings.isEmpty(movie.posterUrl)}"
+             style="width:200px; height:300px; background:#ddd; display:flex; align-items:center; justify-content:center;">
+            No poster
+        </div>
 
         <p>
             <strong>IMDb ID:</strong>
@@ -37,9 +48,14 @@
         <p th:text="${movie.description}">Movie description</p>
 
         <h3>Genres</h3>
-        <ul>
+
+        <ul th:if="${movie.genres != null and !#lists.isEmpty(movie.genres)}">
             <li th:each="genre : ${movie.genres}" th:text="${genre.name}">Action</li>
         </ul>
+
+        <p th:if="${movie.genres == null or #lists.isEmpty(movie.genres)}">
+            No genres available.
+        </p>
 
         <a th:href="@{/diary/create/{imdbId}(imdbId=${movie.imdbId})}">Add to diary</a>
         <a th:href="@{/watch-events/create/{imdbId}(imdbId=${movie.imdbId})}">Add watch event</a>

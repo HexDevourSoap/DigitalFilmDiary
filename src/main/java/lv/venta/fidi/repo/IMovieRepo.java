@@ -8,7 +8,7 @@ import lv.venta.fidi.model.Movie;
 
 public interface IMovieRepo extends JpaRepository<Movie, Long> {
 
-    boolean existsByImdbId(String imdbId);
+    public abstract boolean existsByImdbId(String imdbId);
 
-    Optional<Movie> findByImdbId(String imdbId);
+    public abstract Optional<Movie> findByImdbId(String imdbId);
 }
