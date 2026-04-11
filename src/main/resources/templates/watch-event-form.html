@@ -1,39 +1,48 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:attr="lang=${appLang},data-app-lang=${appLang}">
 <head>
     <title>Add Watch Event</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <th:block th:replace="~{fragments/site-chrome :: i18nScripts}"></th:block>
+    <script th:src="@{/theme.js}" defer></script>
 </head>
 <body>
 
-    <h1>Add Watch Event</h1>
+<h1 class="page-title" data-i18n="formWatch.titleAdd">Add Watch Event</h1>
+<header th:replace="~{fragments/site-chrome :: siteHeader}"></header>
+
+<hr>
+
+<div class="details-container">
 
     <div th:if="${movie != null}">
         <h2 th:text="${movie.title}">Movie Title</h2>
     </div>
 
-    <form th:action="@{/watch-events/create}" th:object="${watchEvent}" method="post">
+    <form th:action="@{|${langPrefix}/watch-events/create|}" th:object="${watchEvent}" method="post">
         <input type="hidden" name="imdbId" th:value="${movie.imdbID}" />
 
-        <div>
-            <label for="watchedAt">Watched at:</label>
-            <input type="date" id="watchedAt" th:field="*{watchedAt}">
+        <div class="form-group">
+            <label for="watchedAt" data-i18n="formWatch.watchedAt">Watched at:</label><br>
+            <input type="date" id="watchedAt" th:field="*{watchedAt}" class="form-input">
         </div>
 
-        <br>
-
-        <div>
-            <label for="notes">Notes:</label><br>
-            <textarea id="notes" th:field="*{notes}" rows="6" cols="50"></textarea>
+        <div class="form-group">
+            <label for="notes" data-i18n="formWatch.notes">Notes:</label><br>
+            <textarea id="notes" th:field="*{notes}" rows="6" cols="50" class="form-input"></textarea>
         </div>
 
-        <br>
-
-        <button type="submit">Save watch event</button>
+        <button type="submit" class="search-button" data-i18n="formWatch.save">Save watch event</button>
     </form>
 
-    <br>
-    <a href="/movies">Back to movies</a>
+</div>
+
+<div class="back-links">
+    <a th:href="@{|${langPrefix}/movies|}" data-i18n="formWatch.backMovies">Back to movies</a>
+</div>
 
 </body>
 </html>

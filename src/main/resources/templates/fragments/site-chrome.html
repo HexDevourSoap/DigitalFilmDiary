@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+
+<th:block th:fragment="i18nScripts">
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.11.5/i18next.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next-http-backend@2.5.2/i18nextHttpBackend.min.js"></script>
+    <script th:src="@{/i18n-boot.js}" defer></script>
+</th:block>
+
+<header th:fragment="siteHeader" class="site-header hud-shell">
+    <nav class="site-nav" aria-label="Primary navigation">
+        <div class="nav-cluster">
+            <a class="nav-btn" th:href="@{|${langPrefix}/|}" data-i18n="nav.home">Home</a>
+            <a class="nav-btn" th:href="@{|${langPrefix}/movies|}" data-i18n="nav.movies">Browse movies</a>
+            <a class="nav-btn" th:href="@{|${langPrefix}/diary|}" data-i18n="nav.diary">My diary</a>
+            <a class="nav-btn" th:href="@{|${langPrefix}/recommendations|}" data-i18n="nav.recommendations">Recommendations</a>
+        </div>
+
+        <div class="nav-cluster nav-cluster--user">
+            <span sec:authorize="isAnonymous()">
+                <a class="nav-btn nav-btn--accent" th:href="@{|${langPrefix}/login|}" data-i18n="nav.login">Login</a>
+            </span>
+
+            <span sec:authorize="isAuthenticated()" class="nav-user-block">
+                <span class="nav-user-chip">
+                    <span class="nav-user-label" data-i18n="nav.loggedInAs">Logged in as:</span>
+                    <b class="nav-user-name" sec:authentication="name">user</b>
+                </span>
+                <form th:action="@{/logout}" method="post" class="inline-form nav-logout-form">
+                    <button type="submit" class="nav-btn nav-btn--ghost logout-button" data-i18n="nav.logout">Logout</button>
+                </form>
+            </span>
+        </div>
+    </nav>
+
+    <div class="hud-bar-actions">
+        <div class="lang-switch" role="group" aria-label="Language">
+            <a th:href="${langUrlLv}" class="lang-link" th:classappend="${appLang == 'lv'} ? 'is-active'">LV</a>
+            <a th:href="${langUrlEn}" class="lang-link" th:classappend="${appLang == 'en'} ? 'is-active'">EN</a>
+        </div>
+        <button id="theme-toggle" class="theme-button hud-theme-btn" type="button">🌙 Dark mode</button>
+    </div>
+</header>
+
+</body>
+</html>

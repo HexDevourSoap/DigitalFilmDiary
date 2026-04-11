@@ -1,48 +1,77 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:attr="lang=${appLang},data-app-lang=${appLang}">
 <head>
     <title>Recommendations</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <th:block th:replace="~{fragments/site-chrome :: i18nScripts}"></th:block>
+    <script th:src="@{/theme.js}" defer></script>
 </head>
 <body>
 
-    <h1>Recommended for You</h1>
+<h1 class="page-title" data-i18n="recoPage.title">Recommended for You</h1>
+<header th:replace="~{fragments/site-chrome :: siteHeader}"></header>
 
-    <div th:if="${recommendations == null or #lists.isEmpty(recommendations)}">
-        <p>No recommendations available yet.</p>
-    </div>
+<hr>
 
-    <div th:each="rec : ${recommendations}">
-        <hr>
+<div th:if="${recommendations == null or #lists.isEmpty(recommendations)}" class="details-container">
+    <p data-i18n="recoPage.empty">No recommendations available yet.</p>
+</div>
 
-        <h2 th:text="${rec.movie.title}">Movie Title</h2>
+<div class="movie-grid" th:if="${recommendations != null and !#lists.isEmpty(recommendations)}">
+    <div th:each="rec : ${recommendations}" class="movie-card">
 
-        <img th:if="${rec.movie.posterUrl != null and !#strings.isEmpty(rec.movie.posterUrl)}"
-             th:src="${rec.movie.posterUrl}"
-             alt="Poster"
-             width="150">
+        <a th:href="@{|${langPrefix}/movies/${rec.movie.movieId}|}">
+            <h3 th:text="${rec.movie.title}" class="movie-title">Movie Title</h3>
+
+            <img th:if="${rec.movie.posterUrl != null and !#strings.isEmpty(rec.movie.posterUrl)}"
+                 th:src="${rec.movie.posterUrl}"
+                 data-i18n-alt="home.posterAlt"
+                 alt="Poster"
+                 class="poster"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+
+            <div th:if="${rec.movie.posterUrl != null and !#strings.isEmpty(rec.movie.posterUrl)}"
+                 class="no-poster"
+                 style="display:none;"
+                 data-i18n="home.noPoster">
+                No poster
+            </div>
+
+            <div th:if="${rec.movie.posterUrl == null or #strings.isEmpty(rec.movie.posterUrl)}"
+                 class="no-poster"
+                 data-i18n="home.noPoster">
+                No poster
+            </div>
+        </a>
 
         <p>
-            <strong>IMDb rating:</strong>
+            <strong data-i18n="movie.imdbRating">IMDb rating:</strong>
             <span th:text="${rec.movie.imdbRating}">8.5</span>
         </p>
 
         <p>
-            <strong>Score:</strong>
+            <strong data-i18n="recoPage.score">Score:</strong>
             <span th:text="${rec.score}">5.0</span>
         </p>
 
         <p>
-            <strong>Reason:</strong>
+            <strong data-i18n="recoPage.reason">Reason:</strong>
             <span th:text="${rec.reason}">Because you like Sci-Fi</span>
         </p>
 
-        <a th:href="@{/movies/{id}(id=${rec.movie.movieId})}">View movie</a>
-        <a th:href="@{/diary/create/{imdbId}(imdbId=${rec.movie.imdbId})}">Add to diary</a>
+        <div class="button-group">
+            <a th:href="@{|${langPrefix}/movies/${rec.movie.movieId}|}" class="action-button" data-i18n="recoPage.viewMovie">View movie</a>
+            <a th:href="@{|${langPrefix}/diary/create/${rec.movie.imdbId}|}" class="action-button" data-i18n="recoPage.addDiary">Add to diary</a>
+        </div>
     </div>
+</div>
 
-    <br>
-    <a href="/">Back to home</a>
+<div class="back-links">
+    <a th:href="@{|${langPrefix}/|}" data-i18n="recoPage.backHome">Back to home</a>
+</div>
 
 </body>
 </html>

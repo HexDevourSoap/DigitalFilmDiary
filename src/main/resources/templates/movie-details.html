@@ -1,69 +1,103 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:attr="lang=${appLang},data-app-lang=${appLang}">
+
 <head>
-    <title>Movie Details</title>
+    <title th:text="${movie.title}">Movie</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <th:block th:replace="~{fragments/site-chrome :: i18nScripts}"></th:block>
+    <script th:src="@{/theme.js}" defer></script>
+    <script th:src="@{/plot-translate.js}" defer></script>
 </head>
 <body>
 
-    <div th:if="${movie != null}">
-        <h1 th:text="${movie.title}">Movie Title</h1>
+<h1 class="page-title">
+    <span id="movie-title-text" th:attr="data-en=${movie.title}" th:text="${movie.title}">Movie title</span>
+</h1>
+<header th:replace="~{fragments/site-chrome :: siteHeader}"></header>
+<hr>
 
+<div class="details-container movie-details-layout">
+
+    <div class="movie-details-poster">
         <img th:if="${movie.posterUrl != null and !#strings.isEmpty(movie.posterUrl)}"
              th:src="${movie.posterUrl}"
-             alt="Poster"
-             width="200"
+             th:alt="${movie.title}"
+             class="poster poster--large"
              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
 
         <div th:if="${movie.posterUrl != null and !#strings.isEmpty(movie.posterUrl)}"
-             style="display:none; width:200px; height:300px; background:#ddd; align-items:center; justify-content:center;">
+             class="no-poster no-poster--large"
+             style="display:none;"
+             data-i18n="home.noPoster">
             No poster
         </div>
 
         <div th:if="${movie.posterUrl == null or #strings.isEmpty(movie.posterUrl)}"
-             style="width:200px; height:300px; background:#ddd; display:flex; align-items:center; justify-content:center;">
+             class="no-poster no-poster--large"
+             data-i18n="home.noPoster">
             No poster
         </div>
-
-        <p>
-            <strong>IMDb ID:</strong>
-            <span th:text="${movie.imdbId}">tt1234567</span>
-        </p>
-
-        <p>
-            <strong>Release year:</strong>
-            <span th:text="${movie.releaseYear}">2024</span>
-        </p>
-
-        <p>
-            <strong>Runtime:</strong>
-            <span th:text="${movie.runtimeMin}">120</span> min
-        </p>
-
-        <p>
-            <strong>IMDb rating:</strong>
-            <span th:text="${movie.imdbRating}">8.5</span>
-        </p>
-
-        <p th:text="${movie.description}">Movie description</p>
-
-        <h3>Genres</h3>
-
-        <ul th:if="${movie.genres != null and !#lists.isEmpty(movie.genres)}">
-            <li th:each="genre : ${movie.genres}" th:text="${genre.name}">Action</li>
-        </ul>
-
-        <p th:if="${movie.genres == null or #lists.isEmpty(movie.genres)}">
-            No genres available.
-        </p>
-
-        <a th:href="@{/diary/create/{imdbId}(imdbId=${movie.imdbId})}">Add to diary</a>
-        <a th:href="@{/watch-events/create/{imdbId}(imdbId=${movie.imdbId})}">Add watch event</a>
-        <a th:href="@{/ratings/create/{imdbId}(imdbId=${movie.imdbId})}">Add rating</a>
     </div>
 
-    <br>
-    <a href="/movies">Back to movies</a>
+    <div class="details-text movie-details-meta">
+        <p th:if="${movie.releaseYear != null}">
+            <strong data-i18n="movie.year">Year:</strong>
+            <span th:text="${movie.releaseYear}">—</span>
+        </p>
+
+        <p th:if="${movie.runtimeMin != null}">
+            <strong data-i18n="movie.runtime">Runtime:</strong>
+            <span th:text="${movie.runtimeMin}">—</span>
+            <span data-i18n="movie.minutes">min</span>
+        </p>
+
+        <p th:if="${movie.imdbRating != null}">
+            <strong data-i18n="movie.imdbRating">IMDb rating:</strong>
+            <span th:text="${movie.imdbRating}">—</span>
+        </p>
+
+        <div th:if="${movie.genres != null and !#lists.isEmpty(movie.genres)}">
+            <strong data-i18n="movie.genres">Genres:</strong>
+            <ul class="genre-list">
+                <li th:each="g : ${movie.genres}"
+                    class="genre-translate"
+                    th:attr="data-en=${g.name}"
+                    th:text="${g.name}">Genre</li>
+            </ul>
+        </div>
+
+        <div th:if="${movie.description != null and !#strings.isEmpty(movie.description)}">
+            <h2 class="section-title movie-plot-heading" style="margin-top: 16px;" data-i18n="movie.plot">Plot</h2>
+            <p id="movie-plot-text" th:text="${movie.description}">Description</p>
+            <script th:inline="javascript">
+                window.__MOVIE_PLOT_LANG__ = /*[[${appLang}]]*/ 'lv';
+                window.__MOVIE_PLOT_EN__ = /*[[${movie.description}]]*/ '';
+            </script>
+        </div>
+
+        <div class="movie-details-actions">
+            <span sec:authorize="isAuthenticated()">
+                <a th:href="@{|${langPrefix}/diary/create/${movie.imdbId}|}" class="action-button" data-i18n="movie.addToDiary">
+                    Add to diary
+                </a>
+            </span>
+            <span sec:authorize="isAnonymous()">
+                <a th:href="@{|${langPrefix}/login|}" class="action-button secondary-button" data-i18n="movie.loginToAdd">
+                    Log in to add
+                </a>
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="back-links">
+    <a th:href="@{|${langPrefix}/movies|}" data-i18n="movie.backMovies">Back to movies</a>
+    <a th:href="@{|${langPrefix}/|}" data-i18n="movie.backHome">Home</a>
+</div>
 
 </body>
 </html>

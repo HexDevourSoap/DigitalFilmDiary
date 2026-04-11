@@ -1,73 +1,58 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:attr="lang=${appLang},data-app-lang=${appLang}">
 
 <head>
     <title>Movie Diary</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <th:block th:replace="~{fragments/site-chrome :: i18nScripts}"></th:block>
+    <script th:src="@{/theme.js}" defer></script>
 </head>
 
 <body>
 
-<h1>🎬 Movie Diary</h1>
+<h1 class="page-title" data-i18n="app.title">🎬 Movie Diary</h1>
 
-<nav>
-    <a th:href="@{/}">Home</a> |
-    <a th:href="@{/movies}">Browse movies</a> |
-    <a th:href="@{/diary}">My diary</a> |
-    <a th:href="@{/recommendations}">Recommendations</a> |
-
-    <span sec:authorize="isAnonymous()">
-        <a th:href="@{/login}">Login</a>
-    </span>
-
-    <span sec:authorize="isAuthenticated()">
-        <span>
-            Logged in as:
-            <b sec:authentication="name"></b>
-        </span>
-
-        <form th:action="@{/logout}" method="post" style="display:inline;">
-            <button type="submit">Logout</button>
-        </form>
-    </span>
-</nav>
+<header th:replace="~{fragments/site-chrome :: siteHeader}"></header>
 
 <hr>
 
-<form th:action="@{/movies/search}" method="get">
-    <input type="text" name="query" placeholder="Search movies...">
-    <button type="submit">Search</button>
+<form th:action="@{|${langPrefix}/movies/search|}" method="get" class="search-form">
+    <input type="text" name="query" data-i18n-placeholder="search.placeholder" placeholder="Search movies..." class="search-input">
+    <button type="submit" class="search-button" data-i18n="search.submit">Search</button>
 </form>
 
 <hr>
 
-<h2>Trending Movies</h2>
+<h2 class="section-title" data-i18n="home.trending">Trending Movies</h2>
 
 <div th:if="${movies == null or #lists.isEmpty(movies)}">
-    <p>No movies available.</p>
+    <p data-i18n="home.noMovies">No movies available.</p>
 </div>
 
-<div style="display:flex; flex-wrap:wrap; gap:20px;">
+<div class="movie-grid">
 
-    <div th:each="m : ${movies}" style="width:150px; text-align:center;">
+    <div th:each="m : ${movies}" class="home-movie-card">
 
-        <a th:href="@{/movies/{id}(id=${m.movieId})}" style="text-decoration:none; color:inherit;">
+        <a th:href="@{|${langPrefix}/movies/${m.movieId}|}">
 
             <img th:if="${m.posterUrl != null and !#strings.isEmpty(m.posterUrl)}"
                  th:src="${m.posterUrl}"
-                 width="120"
+                 class="poster"
+                 data-i18n-alt="home.posterAlt"
                  alt="Poster"
-                 style="display:block; margin:0 auto 10px auto;"
                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
 
             <div th:if="${m.posterUrl != null and !#strings.isEmpty(m.posterUrl)}"
-                 style="display:none; width:120px; height:180px; background:#ddd; margin:0 auto 10px auto; align-items:center; justify-content:center;">
+                 class="no-poster" style="display:none;" data-i18n="home.noPoster">
                 No poster
             </div>
 
             <div th:if="${m.posterUrl == null or #strings.isEmpty(m.posterUrl)}"
-                 style="width:120px; height:180px; background:#ddd; margin:0 auto 10px auto; display:flex; align-items:center; justify-content:center;">
+                 class="no-poster" data-i18n="home.noPoster">
                 No poster
             </div>
 
@@ -75,18 +60,52 @@
         </a>
 
         <div sec:authorize="isAuthenticated()">
-            <a th:href="@{/diary/create/{imdbId}(imdbId=${m.imdbId})}">
-                ➕ Add to diary
+            <a th:href="@{|${langPrefix}/diary/create/${m.imdbId}|}" class="action-button" data-i18n="home.add">
+                ➕ Add
             </a>
         </div>
 
         <div sec:authorize="isAnonymous()">
-            <a th:href="@{/login}">
-                🔒 Login to add
+            <a th:href="@{|${langPrefix}/login|}" class="action-button secondary-button" data-i18n="home.loginToAdd">
+                🔒 Login
             </a>
         </div>
 
     </div>
+
+</div>
+
+<hr>
+
+<h2 class="section-title" data-i18n="home.browseGenres">Browse by genre</h2>
+
+<div th:if="${genres == null or #lists.isEmpty(genres)}">
+    <p data-i18n="home.noGenres">No genres available.</p>
+</div>
+
+<div class="genre-grid">
+
+    <a th:each="g : ${genres}"
+       th:href="@{|${langPrefix}/genres/${g.genreId}|}"
+       class="genre-card">
+
+        <img th:if="${genrePreview[g.genreId] != null and genrePreview[g.genreId].posterUrl != null and !#strings.isEmpty(genrePreview[g.genreId].posterUrl)}"
+             th:src="${genrePreview[g.genreId].posterUrl}"
+             class="genre-image"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+
+        <div th:if="${genrePreview[g.genreId] != null and genrePreview[g.genreId].posterUrl != null and !#strings.isEmpty(genrePreview[g.genreId].posterUrl)}"
+             class="genre-fallback"
+             style="display:none;"></div>
+
+        <div th:if="${genrePreview[g.genreId] == null or genrePreview[g.genreId].posterUrl == null or #strings.isEmpty(genrePreview[g.genreId].posterUrl)}"
+             class="genre-fallback"></div>
+
+        <div class="genre-title">
+            <span th:text="${g.name}">Genre</span>
+        </div>
+
+    </a>
 
 </div>
 

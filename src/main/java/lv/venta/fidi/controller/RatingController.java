@@ -8,7 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lv.venta.fidi.config.LocaleRedirectPaths;
 import lv.venta.fidi.dto.OmdbMovieDto;
 import lv.venta.fidi.model.AppUser;
 import lv.venta.fidi.model.Rating;
@@ -54,6 +56,7 @@ public class RatingController {
                          BindingResult result,
                          @RequestParam("imdbId") String imdbId,
                          Principal principal,
+                         HttpServletRequest request,
                          Model model) {
         try {
             OmdbMovieDto movie = omdbClient.getByImdbId(imdbId);
@@ -72,7 +75,7 @@ public class RatingController {
 
             ratingService.create(user.getUserId(), imdbId, rating.getRatingValue());
 
-            return "redirect:/diary";
+            return LocaleRedirectPaths.redirectDiary(request);
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             return "show-error-page";
@@ -99,6 +102,7 @@ public class RatingController {
     public String update(@PathVariable Long id,
                          @Valid @ModelAttribute("rating") Rating rating,
                          BindingResult result,
+                         HttpServletRequest request,
                          Model model) {
         try {
             if (result.hasErrors()) {
@@ -108,7 +112,7 @@ public class RatingController {
             }
 
             ratingService.update(id, rating.getRatingValue());
-            return "redirect:/diary";
+            return LocaleRedirectPaths.redirectDiary(request);
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             return "show-error-page";

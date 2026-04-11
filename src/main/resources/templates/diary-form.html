@@ -1,25 +1,35 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:attr="lang=${appLang},data-app-lang=${appLang}">
 <head>
     <title>Add to Diary</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <th:block th:replace="~{fragments/site-chrome :: i18nScripts}"></th:block>
+    <script th:src="@{/theme.js}" defer></script>
 </head>
 <body>
 
-    <h1>Add Movie to Diary</h1>
+<h1 class="page-title" data-i18n="formDiary.titleAdd">Add Movie to Diary</h1>
+<header th:replace="~{fragments/site-chrome :: siteHeader}"></header>
+
+<hr>
+
+<div class="details-container">
 
     <div th:if="${movie != null}">
         <h2 th:text="${movie.title}">Movie Title</h2>
         <p th:text="${movie.plot}">Movie description</p>
     </div>
 
-    <form th:action="@{/diary/create}" th:object="${userMovie}" method="post">
+    <form th:action="@{|${langPrefix}/diary/create|}" th:object="${userMovie}" method="post">
         <input type="hidden" name="imdbId" th:value="${movie.imdbID}" />
 
-        <div>
-            <label for="status">Status:</label>
-            <select id="status" th:field="*{status}">
-                <option value="">-- Select status --</option>
+        <div class="form-group">
+            <label for="status" data-i18n="formDiary.status">Status:</label><br>
+            <select id="status" th:field="*{status}" class="form-input">
+                <option value="" data-i18n="formDiary.statusPlaceholder">-- Select status --</option>
                 <option th:each="statusOption : ${statuses}"
                         th:value="${statusOption}"
                         th:text="${statusOption}">
@@ -27,34 +37,29 @@
             </select>
         </div>
 
-        <br>
-
-        <div>
-            <label for="plannedDate">Planned date:</label>
-            <input type="date" id="plannedDate" th:field="*{plannedDate}">
+        <div class="form-group">
+            <label for="plannedDate" data-i18n="formDiary.plannedDate">Planned date:</label><br>
+            <input type="date" id="plannedDate" th:field="*{plannedDate}" class="form-input">
         </div>
 
-        <br>
-
-        <div>
-            <label for="notes">Notes:</label><br>
-            <textarea id="notes" th:field="*{notes}" rows="6" cols="50"></textarea>
+        <div class="form-group">
+            <label for="notes" data-i18n="formDiary.notes">Notes:</label><br>
+            <textarea id="notes" th:field="*{notes}" rows="6" cols="50" class="form-input"></textarea>
         </div>
 
-        <br>
-
-        <div>
-            <label for="ratingValue">Your rating (1-10):</label>
-            <input type="number" id="ratingValue" name="ratingValue" min="1" max="10" th:value="${ratingValue}">
+        <div class="form-group">
+            <label for="ratingValue" data-i18n="formDiary.rating">Your rating (1-10):</label><br>
+            <input type="number" id="ratingValue" name="ratingValue" min="1" max="10" th:value="${ratingValue}" class="form-input">
         </div>
 
-        <br>
-
-        <button type="submit">Save to diary</button>
+        <button type="submit" class="search-button" data-i18n="formDiary.save">Save to diary</button>
     </form>
 
-    <br>
-    <a href="/movies">Back to movies</a>
+</div>
+
+<div class="back-links">
+    <a th:href="@{|${langPrefix}/movies|}" data-i18n="formDiary.backMovies">Back to movies</a>
+</div>
 
 </body>
 </html>

@@ -8,7 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lv.venta.fidi.config.LocaleRedirectPaths;
 import lv.venta.fidi.dto.OmdbMovieDto;
 import lv.venta.fidi.model.AppUser;
 import lv.venta.fidi.model.WatchEvent;
@@ -54,6 +56,7 @@ public class WatchEventController {
                          BindingResult result,
                          @RequestParam("imdbId") String imdbId,
                          Principal principal,
+                         HttpServletRequest request,
                          Model model) {
         try {
             OmdbMovieDto movie = omdbClient.getByImdbId(imdbId);
@@ -72,7 +75,7 @@ public class WatchEventController {
 
             watchEventService.create(user.getUserId(), imdbId, watchEvent.getWatchedAt(), watchEvent.getNotes());
 
-            return "redirect:/diary";
+            return LocaleRedirectPaths.redirectDiary(request);
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             return "show-error-page";
@@ -99,6 +102,7 @@ public class WatchEventController {
     public String update(@PathVariable Long id,
                          @Valid @ModelAttribute("watchEvent") WatchEvent watchEvent,
                          BindingResult result,
+                         HttpServletRequest request,
                          Model model) {
         try {
             if (result.hasErrors()) {
@@ -108,7 +112,7 @@ public class WatchEventController {
             }
 
             watchEventService.update(id, watchEvent.getWatchedAt(), watchEvent.getNotes());
-            return "redirect:/diary";
+            return LocaleRedirectPaths.redirectDiary(request);
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             return "show-error-page";
@@ -116,10 +120,10 @@ public class WatchEventController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteById(@PathVariable Long id, Model model) {
+    public String deleteById(@PathVariable Long id, HttpServletRequest request, Model model) {
         try {
             watchEventService.deleteById(id);
-            return "redirect:/diary";
+            return LocaleRedirectPaths.redirectDiary(request);
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             return "show-error-page";

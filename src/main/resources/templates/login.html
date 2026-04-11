@@ -1,41 +1,50 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:attr="lang=${appLang},data-app-lang=${appLang}">
 <head>
     <title>Login</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <th:block th:replace="~{fragments/site-chrome :: i18nScripts}"></th:block>
+    <script th:src="@{/theme.js}" defer></script>
 </head>
 <body>
 
-    <h1>Login</h1>
+<h1 class="page-title" data-i18n="loginPage.title">Login</h1>
+<header th:replace="~{fragments/site-chrome :: siteHeader}"></header>
+
+<hr>
+
+<div class="login-container">
 
     <div th:if="${param.error}">
-        <p style="color:red;">Invalid email or password</p>
+        <p class="message-error" data-i18n="loginPage.error">Invalid email or password</p>
     </div>
 
     <div th:if="${param.logout}">
-        <p style="color:green;">You have been logged out</p>
+        <p class="message-success" data-i18n="loginPage.logoutOk">You have been logged out</p>
     </div>
 
     <form th:action="@{/login}" method="post">
-        <div>
-            <label for="username">Email:</label>
-            <input type="text" id="username" name="username">
+        <div class="form-group">
+            <label for="username" data-i18n="loginPage.email">Email:</label><br>
+            <input type="text" id="username" name="username" class="form-input">
         </div>
 
-        <br>
-
-        <div>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password">
+        <div class="form-group">
+            <label for="password" data-i18n="loginPage.password">Password:</label><br>
+            <input type="password" id="password" name="password" class="form-input">
         </div>
 
-        <br>
-
-        <button type="submit">Sign in</button>
+        <button type="submit" class="search-button" data-i18n="loginPage.submit">Sign in</button>
     </form>
 
-    <br>
-    <a href="/">Back to home</a>
+</div>
+
+<div class="back-links">
+    <a th:href="@{|${langPrefix}/|}" data-i18n="loginPage.backHome">Back to home</a>
+</div>
 
 </body>
 </html>

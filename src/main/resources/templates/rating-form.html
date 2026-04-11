@@ -1,32 +1,43 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:attr="lang=${appLang},data-app-lang=${appLang}">
 <head>
     <title>Add Rating</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <th:block th:replace="~{fragments/site-chrome :: i18nScripts}"></th:block>
+    <script th:src="@{/theme.js}" defer></script>
 </head>
 <body>
 
-    <h1>Add Rating</h1>
+<h1 class="page-title" data-i18n="formRating.titleAdd">Add Rating</h1>
+<header th:replace="~{fragments/site-chrome :: siteHeader}"></header>
+
+<hr>
+
+<div class="details-container">
 
     <div th:if="${movie != null}">
         <h2 th:text="${movie.title}">Movie Title</h2>
     </div>
 
-    <form th:action="@{/ratings/create}" th:object="${rating}" method="post">
+    <form th:action="@{|${langPrefix}/ratings/create|}" th:object="${rating}" method="post">
         <input type="hidden" name="imdbId" th:value="${movie.imdbID}" />
 
-        <div>
-            <label for="ratingValue">Rating (1-10):</label>
-            <input type="number" id="ratingValue" th:field="*{ratingValue}" min="1" max="10">
+        <div class="form-group">
+            <label for="ratingValue" data-i18n="formRating.rating">Rating (1-10):</label><br>
+            <input type="number" id="ratingValue" th:field="*{ratingValue}" min="1" max="10" class="form-input">
         </div>
 
-        <br>
-
-        <button type="submit">Save rating</button>
+        <button type="submit" class="search-button" data-i18n="formRating.save">Save rating</button>
     </form>
 
-    <br>
-    <a href="/movies">Back to movies</a>
+</div>
+
+<div class="back-links">
+    <a th:href="@{|${langPrefix}/movies|}" data-i18n="formRating.backMovies">Back to movies</a>
+</div>
 
 </body>
 </html>

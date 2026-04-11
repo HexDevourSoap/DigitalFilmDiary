@@ -94,6 +94,30 @@ public class FidiApplication {
             Genre comedy = genreRepo.findByName("Comedy")
                     .orElseGet(() -> genreRepo.save(new Genre("Comedy")));
 
+            Genre crime = genreRepo.findByName("Crime")
+                    .orElseGet(() -> genreRepo.save(new Genre("Crime")));
+
+            Genre adventure = genreRepo.findByName("Adventure")
+                    .orElseGet(() -> genreRepo.save(new Genre("Adventure")));
+
+            Genre fantasy = genreRepo.findByName("Fantasy")
+                    .orElseGet(() -> genreRepo.save(new Genre("Fantasy")));
+
+            Genre animation = genreRepo.findByName("Animation")
+                    .orElseGet(() -> genreRepo.save(new Genre("Animation")));
+
+            Genre family = genreRepo.findByName("Family")
+                    .orElseGet(() -> genreRepo.save(new Genre("Family")));
+
+            Genre romance = genreRepo.findByName("Romance")
+                    .orElseGet(() -> genreRepo.save(new Genre("Romance")));
+
+            Genre mystery = genreRepo.findByName("Mystery")
+                    .orElseGet(() -> genreRepo.save(new Genre("Mystery")));
+
+            Genre western = genreRepo.findByName("Western")
+                    .orElseGet(() -> genreRepo.save(new Genre("Western")));
+
             // -------------------------
             // Movies cache / metadata from OMDb
             // -------------------------
@@ -115,7 +139,212 @@ public class FidiApplication {
             Movie movie4 = getOrUpdateMovieFromOmdb(
                     movieRepo, omdbClient,
                     "tt0110912",
-                    Arrays.asList(drama, thriller, comedy));
+                    Arrays.asList(drama, thriller, crime));
+
+            Movie movie5 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0468569",
+                    Arrays.asList(action, crime, drama, thriller));
+
+            Movie movie6 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0068646",
+                    Arrays.asList(crime, drama));
+
+            Movie movie7 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0111161",
+                    Arrays.asList(drama));
+
+            Movie movie8 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0109830",
+                    Arrays.asList(drama, romance));
+
+            Movie movie9 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt1392190",
+                    Arrays.asList(action, adventure, sciFi, thriller));
+
+            Movie movie10 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt7286456",
+                    Arrays.asList(crime, drama, thriller));
+
+            Movie movie11 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt1853728",
+                    Arrays.asList(action, drama));
+
+            Movie movie12 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt4154756",
+                    Arrays.asList(action, adventure, sciFi));
+
+            Movie movie13 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt4154796",
+                    Arrays.asList(action, adventure, drama, sciFi));
+
+            Movie movie14 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0903747",
+                    Arrays.asList(crime, drama, thriller));
+
+            Movie movie15 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0126029",
+                    Arrays.asList(adventure, animation, comedy, family, fantasy));
+
+            Movie movie16 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0298148",
+                    Arrays.asList(adventure, animation, comedy, family, fantasy));
+
+            Movie movie17 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0413267",
+                    Arrays.asList(adventure, animation, comedy, family, fantasy));
+
+            Movie movie18 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0892791",
+                    Arrays.asList(adventure, animation, comedy, family, fantasy));
+
+            Movie movie19 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt2380307",
+                    Arrays.asList(animation, adventure, comedy, drama, family, fantasy));
+
+            Movie movie20 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0472033",
+                    Arrays.asList(action, adventure, sciFi));
+
+            Movie movie21 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt1630029",
+                    Arrays.asList(animation, adventure, comedy, family, fantasy));
+
+            Movie movie22 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt1825683",
+                    Arrays.asList(action, adventure, drama, sciFi));
+
+            Movie movie23 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt1517268",
+                    Arrays.asList(adventure, comedy, fantasy));
+
+            Movie movie24 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt1099212",
+                    Arrays.asList(action, adventure, sciFi));
+
+            Movie movie25 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0482571",
+                    Arrays.asList(drama, mystery, sciFi, thriller));
+
+            Movie movie26 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0137523",
+                    Arrays.asList(drama));
+
+            Movie movie27 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0114369",
+                    Arrays.asList(crime, drama, mystery, thriller));
+
+            Movie movie28 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0102926",
+                    Arrays.asList(crime, drama, thriller));
+
+            Movie movie29 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0172495",
+                    Arrays.asList(action, adventure, drama));
+
+            Movie movie30 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0120815",
+                    Arrays.asList(drama));
+
+            Movie movie31 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0167260",
+                    Arrays.asList(action, adventure, drama, fantasy));
+
+            Movie movie32 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0167261",
+                    Arrays.asList(action, adventure, drama, fantasy));
+
+            Movie movie33 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0167263",
+                    Arrays.asList(action, adventure, drama, fantasy));
+
+            Movie movie34 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt2582802",
+                    Arrays.asList(crime, drama));
+
+            Movie movie35 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0118799",
+                    Arrays.asList(comedy, drama, romance));
+
+            Movie movie36 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0110357",
+                    Arrays.asList(adventure, animation, drama, family));
+
+            Movie movie37 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0266543",
+                    Arrays.asList(adventure, animation, comedy, family));
+
+            Movie movie38 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0317705",
+                    Arrays.asList(adventure, animation, comedy, family));
+
+            Movie movie39 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0114709",
+                    Arrays.asList(adventure, animation, comedy, family, fantasy));
+
+            Movie movie40 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0435761",
+                    Arrays.asList(adventure, animation, comedy, family, fantasy));
+
+            Movie movie41 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0099685",
+                    Arrays.asList(action, adventure, drama, western));
+
+            Movie movie42 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0209144",
+                    Arrays.asList(mystery, thriller));
+
+            Movie movie43 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt0114814",
+                    Arrays.asList(crime, mystery, thriller));
+
+            Movie movie44 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt1345836",
+                    Arrays.asList(action, drama, thriller));
+
+            Movie movie45 = getOrUpdateMovieFromOmdb(
+                    movieRepo, omdbClient,
+                    "tt1130884",
+                    Arrays.asList(mystery, thriller));
 
             // -------------------------
             // UserMovie diary entries
@@ -141,6 +370,14 @@ public class FidiApplication {
                 userMovieRepo.save(new UserMovie(user2, movie4.getImdbId(), WatchStatus.WATCHED));
             }
 
+            if (!userMovieRepo.existsByUserAndImdbId(user1, movie15.getImdbId())) {
+                userMovieRepo.save(new UserMovie(user1, movie15.getImdbId(), WatchStatus.WATCHED));
+            }
+
+            if (!userMovieRepo.existsByUserAndImdbId(user2, movie20.getImdbId())) {
+                userMovieRepo.save(new UserMovie(user2, movie20.getImdbId(), WatchStatus.PLAN_TO_WATCH));
+            }
+
             // -------------------------
             // Ratings
             // -------------------------
@@ -154,6 +391,10 @@ public class FidiApplication {
 
             if (!ratingRepo.existsByUserAndImdbId(user2, movie3.getImdbId())) {
                 ratingRepo.save(new Rating(user2, movie3.getImdbId(), 8));
+            }
+
+            if (!ratingRepo.existsByUserAndImdbId(user1, movie15.getImdbId())) {
+                ratingRepo.save(new Rating(user1, movie15.getImdbId(), 8));
             }
 
             // -------------------------

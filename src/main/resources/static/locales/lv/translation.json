@@ -1,0 +1,137 @@
+{
+  "app": {
+    "title": "Filmu dienasgrāmata"
+  },
+  "nav": {
+    "home": "Sākums",
+    "movies": "Skatīt filmas",
+    "diary": "Mana dienasgrāmata",
+    "recommendations": "Ieteikumi",
+    "login": "Pieslēgties",
+    "logout": "Iziet",
+    "loggedInAs": "Pieslēdzies kā:"
+  },
+  "theme": {
+    "dark": "Tumšais režīms",
+    "light": "Gaišais režīms"
+  },
+  "search": {
+    "placeholder": "Meklēt filmas...",
+    "submit": "Meklēt"
+  },
+  "home": {
+    "trending": "Tendences filmas",
+    "noMovies": "Nav pieejamu filmu.",
+    "browseGenres": "Pārlūkot pēc žanra",
+    "noGenres": "Nav pieejamu žanru.",
+    "noPoster": "Nav plakāta",
+    "posterAlt": "Plakāts",
+    "add": "Pievienot",
+    "loginToAdd": "Pieslēgties"
+  },
+  "movie": {
+    "year": "Gads:",
+    "runtime": "Ilgums:",
+    "minutes": "min",
+    "imdbRating": "IMDb vērtējums:",
+    "genres": "Žanri:",
+    "plot": "Sižets",
+    "addToDiary": "Pievienot dienasgrāmatai",
+    "loginToAdd": "Pieslēgties, lai pievienotu",
+    "backMovies": "Atpakaļ uz filmām",
+    "backHome": "Sākums",
+    "ratingShort": "Vērtējums:"
+  },
+  "browse": {
+    "title": "Filmas",
+    "searchResults": "Meklēšanas rezultāti",
+    "noSearchResults": "Nekas nav atrasts.",
+    "closestMatches": "Tuvākās atbilstības",
+    "fallbackInfo": "Precīzi OMDb rezultāti netika atrasti; rādītas tuvākās vietējās filmas.",
+    "noCloseMatches": "Tuvu atbilstību nav.",
+    "allMovies": "Visas filmas",
+    "noMovies": "Filmu nav."
+  },
+  "loginPage": {
+    "title": "Pieteikties",
+    "error": "Nepareizs e-pasts vai parole",
+    "logoutOk": "Jūs esat izgājis",
+    "email": "E-pasts:",
+    "password": "Parole:",
+    "submit": "Pieteikties",
+    "backHome": "Atpakaļ uz sākumu"
+  },
+  "diaryPage": {
+    "title": "Mana filmu dienasgrāmata",
+    "sectionSaved": "Saglabātas / plānotas / skatās",
+    "emptyEntries": "Vēl nav ierakstu.",
+    "status": "Statuss:",
+    "plannedDate": "Plānotais datums:",
+    "notes": "Piezīmes:",
+    "yourRating": "Tavs vērtējums:",
+    "notRated": "vēl nav vērtēts",
+    "edit": "Labot",
+    "delete": "Dzēst",
+    "sectionWatch": "Skatīšanās notikumi",
+    "emptyWatch": "Vēl nav skatīšanās notikumu.",
+    "watchedAt": "Skatīts:",
+    "editWatch": "Labot notikumu",
+    "deleteWatch": "Dzēst notikumu",
+    "backHome": "Atpakaļ uz sākumu",
+    "backMovies": "Skatīt filmas"
+  },
+  "recoPage": {
+    "title": "Ieteikumi tev",
+    "empty": "Pagaidām nav ieteikumu.",
+    "score": "Rezultāts:",
+    "reason": "Iemesls:",
+    "viewMovie": "Skatīt filmu",
+    "addDiary": "Pievienot dienasgrāmatai",
+    "backHome": "Atpakaļ uz sākumu"
+  },
+  "genrePage": {
+    "back": "Atpakaļ"
+  },
+  "formDiary": {
+    "titleAdd": "Pievienot filmu dienasgrāmatai",
+    "status": "Statuss:",
+    "statusPlaceholder": "-- Izvēlies statusu --",
+    "plannedDate": "Plānotais datums:",
+    "notes": "Piezīmes:",
+    "rating": "Tavs vērtējums (1-10):",
+    "save": "Saglabāt dienasgrāmātā",
+    "backMovies": "Atpakaļ uz filmām"
+  },
+  "formWatch": {
+    "titleAdd": "Pievienot skatīšanās notikumu",
+    "watchedAt": "Skatīts:",
+    "notes": "Piezīmes:",
+    "save": "Saglabāt notikumu",
+    "backMovies": "Atpakaļ uz filmām"
+  },
+  "formRating": {
+    "titleAdd": "Pievienot vērtējumu",
+    "rating": "Vērtējums (1-10):",
+    "save": "Saglabāt vērtējumu",
+    "backMovies": "Atpakaļ uz filmām"
+  },
+  "editDiary": {
+    "title": "Labot dienasgrāmatas ierakstu",
+    "update": "Atjaunināt ierakstu",
+    "backDiary": "Atpakaļ uz dienasgrāmatu"
+  },
+  "editRating": {
+    "title": "Labot vērtējumu",
+    "update": "Atjaunināt vērtējumu",
+    "backDiary": "Atpakaļ uz dienasgrāmatu"
+  },
+  "editWatch": {
+    "title": "Labot skatīšanās notikumu",
+    "update": "Atjaunināt notikumu",
+    "backDiary": "Atpakaļ uz dienasgrāmatu"
+  },
+  "errorPage": {
+    "title": "Kaut kas nogāja greizi",
+    "home": "Uz sākumu"
+  }
+}

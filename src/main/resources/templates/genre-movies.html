@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:attr="lang=${appLang},data-app-lang=${appLang}">
+<head>
+    <title>Genre</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <th:block th:replace="~{fragments/site-chrome :: i18nScripts}"></th:block>
+    <script th:src="@{/theme.js}" defer></script>
+</head>
+<body>
+
+<h1 class="page-title" th:text="${genre.name}">Genre</h1>
+<header th:replace="~{fragments/site-chrome :: siteHeader}"></header>
+
+<hr>
+
+<div class="movie-grid">
+    <div th:each="m : ${movies}" class="movie-card">
+
+        <a th:href="@{|${langPrefix}/movies/${m.movieId}|}">
+
+            <h3 th:text="${m.title}" class="movie-title">Movie Title</h3>
+
+            <img th:if="${m.posterUrl != null and !#strings.isEmpty(m.posterUrl)}"
+                 th:src="${m.posterUrl}"
+                 class="poster"
+                 data-i18n-alt="home.posterAlt"
+                 alt="Poster"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+
+            <div th:if="${m.posterUrl != null and !#strings.isEmpty(m.posterUrl)}"
+                 class="no-poster"
+                 style="display:none;"
+                 data-i18n="home.noPoster">
+                No poster
+            </div>
+
+            <div th:if="${m.posterUrl == null or #strings.isEmpty(m.posterUrl)}"
+                 class="no-poster"
+                 data-i18n="home.noPoster">
+                No poster
+            </div>
+        </a>
+
+    </div>
+</div>
+
+<div class="back-links">
+    <a th:href="@{|${langPrefix}/|}" data-i18n="genrePage.back">Back</a>
+</div>
+
+</body>
+</html>

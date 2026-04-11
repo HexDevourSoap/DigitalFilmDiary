@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityManager;
+
 import lv.venta.fidi.enums.WatchStatus;
 import lv.venta.fidi.model.AppUser;
 import lv.venta.fidi.model.Genre;
@@ -50,6 +52,9 @@ public class RecommendationServiceImpl implements IRecommendationService {
     @Autowired
     private IWatchEventRepo watchEventRepo;
 
+    @Autowired
+    private EntityManager entityManager;
+
     @Override
     public void generateRecommendationsForUser(Long userId) throws Exception {
 
@@ -59,8 +64,6 @@ public class RecommendationServiceImpl implements IRecommendationService {
 
         AppUser user = appUserRepo.findById(userId)
                 .orElseThrow(() -> new Exception("User with ID " + userId + " was not found"));
-
-        recommendationRepo.deleteByUser(user);
 
         Collection<Rating> userRatings = ratingRepo.findByUser(user);
         Collection<UserMovie> userDiary = userMovieRepo.findByUser(user);
@@ -111,6 +114,18 @@ public class RecommendationServiceImpl implements IRecommendationService {
         }
 
         Collection<Movie> allMovies = movieRepo.findAll();
+        for (Movie m : allMovies) {
+            if (m.getGenres() != null) {
+                m.getGenres().size();
+            }
+        }
+
+        recommendationRepo.deleteByUser(user);
+        entityManager.flush();
+        entityManager.clear();
+
+        AppUser userReloaded = appUserRepo.findById(userId)
+                .orElseThrow(() -> new Exception("User with ID " + userId + " was not found"));
 
         for (Movie candidate : allMovies) {
 
@@ -140,13 +155,16 @@ public class RecommendationServiceImpl implements IRecommendationService {
             }
 
             if (score.compareTo(BigDecimal.ZERO) > 0) {
-                Recommendation recommendation = new Recommendation(
-                        user,
-                        candidate,
-                        score,
-                        reasonBuilder.length() > 0 ? reasonBuilder.toString() : "Based on your movie preferences"
-                );
-                recommendationRepo.save(recommendation);
+                String reason = reasonBuilder.length() > 0 ? reasonBuilder.toString() : "Based on your movie preferences";
+                var existingOpt = recommendationRepo.findByUserAndMovie(userReloaded, candidate);
+                if (existingOpt.isPresent()) {
+                    Recommendation existing = existingOpt.get();
+                    existing.setScore(score);
+                    existing.setReason(reason);
+                    recommendationRepo.save(existing);
+                } else {
+                    recommendationRepo.save(new Recommendation(userReloaded, candidate, score, reason));
+                }
             }
         }
     }

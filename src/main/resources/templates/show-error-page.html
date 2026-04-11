@@ -1,16 +1,28 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:attr="lang=${appLang},data-app-lang=${appLang}">
 <head>
     <title>Error</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <th:block th:replace="~{fragments/site-chrome :: i18nScripts}"></th:block>
+    <script th:src="@{/theme.js}" defer></script>
 </head>
 <body>
 
-    <h1>Something went wrong</h1>
+<h1 class="page-title" data-i18n="errorPage.title">Something went wrong</h1>
+<header th:replace="~{fragments/site-chrome :: siteHeader}"></header>
 
+<hr>
+
+<div class="details-container">
     <p th:text="${error}">Error message goes here</p>
+</div>
 
-    <a href="/">Go home</a>
+<div class="back-links">
+    <a th:href="@{|${langPrefix}/|}" data-i18n="errorPage.home">Go home</a>
+</div>
 
 </body>
 </html>
