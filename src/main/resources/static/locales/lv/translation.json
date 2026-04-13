@@ -85,11 +85,6 @@
     "notRated": "vēl nav vērtēts",
     "edit": "Labot",
     "delete": "Dzēst",
-    "sectionWatch": "Skatīšanās notikumi",
-    "emptyWatch": "Vēl nav skatīšanās notikumu.",
-    "watchedAt": "Skatīts:",
-    "editWatch": "Labot notikumu",
-    "deleteWatch": "Dzēst notikumu",
     "backHome": "Atpakaļ uz sākumu",
     "backMovies": "Skatīt filmas"
   },
@@ -115,13 +110,6 @@
     "save": "Saglabāt dienasgrāmātā",
     "backMovies": "Atpakaļ uz filmām"
   },
-  "formWatch": {
-    "titleAdd": "Pievienot skatīšanās notikumu",
-    "watchedAt": "Skatīts:",
-    "notes": "Piezīmes:",
-    "save": "Saglabāt notikumu",
-    "backMovies": "Atpakaļ uz filmām"
-  },
   "formRating": {
     "titleAdd": "Pievienot vērtējumu",
     "rating": "Vērtējums (1-10):",
@@ -136,11 +124,6 @@
   "editRating": {
     "title": "Labot vērtējumu",
     "update": "Atjaunināt vērtējumu",
-    "backDiary": "Atpakaļ uz dienasgrāmatu"
-  },
-  "editWatch": {
-    "title": "Labot skatīšanās notikumu",
-    "update": "Atjaunināt notikumu",
     "backDiary": "Atpakaļ uz dienasgrāmatu"
   },
   "errorPage": {

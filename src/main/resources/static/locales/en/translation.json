@@ -85,11 +85,6 @@
     "notRated": "not rated yet",
     "edit": "Edit",
     "delete": "Delete",
-    "sectionWatch": "Watch events",
-    "emptyWatch": "No watch events yet.",
-    "watchedAt": "Watched at:",
-    "editWatch": "Edit watch event",
-    "deleteWatch": "Delete watch event",
     "backHome": "Back to home",
     "backMovies": "Browse movies"
   },
@@ -115,13 +110,6 @@
     "save": "Save to diary",
     "backMovies": "Back to movies"
   },
-  "formWatch": {
-    "titleAdd": "Add watch event",
-    "watchedAt": "Watched at:",
-    "notes": "Notes:",
-    "save": "Save watch event",
-    "backMovies": "Back to movies"
-  },
   "formRating": {
     "titleAdd": "Add rating",
     "rating": "Rating (1-10):",
@@ -136,11 +124,6 @@
   "editRating": {
     "title": "Edit rating",
     "update": "Update rating",
-    "backDiary": "Back to diary"
-  },
-  "editWatch": {
-    "title": "Edit watch event",
-    "update": "Update watch event",
     "backDiary": "Back to diary"
   },
   "errorPage": {

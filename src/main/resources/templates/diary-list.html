@@ -60,38 +60,6 @@
     </div>
 </div>
 
-<div class="diary-section">
-    <h2 class="section-title" data-i18n="diaryPage.sectionWatch">Watch Events</h2>
-    <div th:if="${watchEvents == null or #lists.isEmpty(watchEvents)}">
-        <p data-i18n="diaryPage.emptyWatch">No watch events yet.</p>
-    </div>
-
-    <div th:each="event : ${watchEvents}">
-        <hr>
-
-        <h3 th:text="${movieMap[event.imdbId] != null ? movieMap[event.imdbId].title : event.imdbId}">
-            Movie Title
-        </h3>
-
-        <img th:if="${movieMap[event.imdbId] != null and movieMap[event.imdbId].poster != null and !#strings.isEmpty(movieMap[event.imdbId].poster) and movieMap[event.imdbId].poster != 'N/A'}"
-             th:src="${movieMap[event.imdbId].poster}"
-             data-i18n-alt="home.posterAlt"
-             alt="Poster"
-             class="poster">
-
-        <p><span data-i18n="diaryPage.watchedAt">Watched at:</span> <span th:text="${event.watchedAt}">2026-03-20</span></p>
-
-        <p th:if="${event.notes != null and !#strings.isEmpty(event.notes)}">
-            <span data-i18n="diaryPage.notes">Notes:</span> <span th:text="${event.notes}">Great movie</span>
-        </p>
-
-        <div class="button-group">
-            <a th:href="@{|${langPrefix}/watch-events/update/${event.watchEventId}|}" class="action-button" data-i18n="diaryPage.editWatch">Edit watch event</a>
-            <a th:href="@{|${langPrefix}/watch-events/delete/${event.watchEventId}|}" class="action-button secondary-button" data-i18n="diaryPage.deleteWatch">Delete watch event</a>
-        </div>
-    </div>
-</div>
-
 <div class="back-links">
     <a th:href="@{|${langPrefix}/|}" data-i18n="diaryPage.backHome">Back to home</a>
     <a th:href="@{|${langPrefix}/movies|}" data-i18n="diaryPage.backMovies">Browse movies</a>

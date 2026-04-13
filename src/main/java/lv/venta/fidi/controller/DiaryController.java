@@ -18,11 +18,9 @@ import lv.venta.fidi.enums.WatchStatus;
 import lv.venta.fidi.model.AppUser;
 import lv.venta.fidi.model.Rating;
 import lv.venta.fidi.model.UserMovie;
-import lv.venta.fidi.model.WatchEvent;
 import lv.venta.fidi.repo.IAppUserRepo;
 import lv.venta.fidi.service.IRatingService;
 import lv.venta.fidi.service.IUserMovieService;
-import lv.venta.fidi.service.IWatchEventService;
 import lv.venta.fidi.service.OmdbClient;
 
 @Controller
@@ -31,9 +29,6 @@ public class DiaryController {
 
     @Autowired
     private IUserMovieService userMovieService;
-
-    @Autowired
-    private IWatchEventService watchEventService;
 
     @Autowired
     private IRatingService ratingService;
@@ -51,7 +46,6 @@ public class DiaryController {
                     .orElseThrow(() -> new Exception("User was not found"));
 
             var diaryEntries = userMovieService.retrieveByUserId(user.getUserId());
-            var watchEvents = watchEventService.retrieveByUserId(user.getUserId());
             var ratings = ratingService.retrieveByUserId(user.getUserId());
 
             Map<String, OmdbMovieDto> movieMap = new HashMap<>();
@@ -61,17 +55,12 @@ public class DiaryController {
                 movieMap.put(entry.getImdbId(), omdbClient.getByImdbId(entry.getImdbId()));
             }
 
-            for (WatchEvent event : watchEvents) {
-                movieMap.put(event.getImdbId(), omdbClient.getByImdbId(event.getImdbId()));
-            }
-
             for (Rating rating : ratings) {
                 movieMap.put(rating.getImdbId(), omdbClient.getByImdbId(rating.getImdbId()));
                 ratingMap.put(rating.getImdbId(), rating);
             }
 
             model.addAttribute("diaryEntries", diaryEntries);
-            model.addAttribute("watchEvents", watchEvents);
             model.addAttribute("movieMap", movieMap);
             model.addAttribute("ratingMap", ratingMap);
 
