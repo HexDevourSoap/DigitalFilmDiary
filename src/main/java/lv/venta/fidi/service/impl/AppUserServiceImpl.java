@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import lv.venta.fidi.model.AppUser;
@@ -20,6 +21,24 @@ public class AppUserServiceImpl implements IAppUserService {
 
     @Autowired
     private IMyAuthorityRepo authorityRepo;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Override
+    public void registerNewUser(String email, String rawPassword) throws Exception {
+        if (email == null || email.isBlank()) {
+            throw new Exception("Email cannot be empty");
+        }
+        String trimmedEmail = email.trim();
+        if (rawPassword == null || rawPassword.length() < 8) {
+            throw new Exception("Password must be at least 8 characters");
+        }
+        MyAuthority userRole = authorityRepo.findByTitle("ROLE_USER")
+                .orElseThrow(() -> new Exception("Registration is temporarily unavailable"));
+        String hash = passwordEncoder.encode(rawPassword);
+        create(trimmedEmail, hash, userRole.getAuthorityId());
+    }
 
     @Override
     public Collection<AppUser> retrieveAll() throws Exception {

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:attr="lang=${appLang},data-app-lang=${appLang}">
+<head>
+    <title>Register</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <th:block th:replace="~{fragments/site-chrome :: i18nScripts}"></th:block>
+    <script th:src="@{/theme.js}" defer></script>
+</head>
+<body>
+
+<h1 class="page-title" data-i18n="registerPage.title">Create account</h1>
+<header th:replace="~{fragments/site-chrome :: siteHeader}"></header>
+
+<hr>
+
+<div class="login-container">
+
+    <div th:if="${registerError == 'passwordMismatch'}">
+        <p class="message-error" data-i18n="registerPage.passwordMismatch">Passwords do not match</p>
+    </div>
+    <div th:if="${registerError == 'server'}">
+        <p class="message-error"><span data-i18n="registerPage.errorPrefix">Could not register:</span>
+            <span th:text="${registerErrorDetail}">Details</span></p>
+    </div>
+
+    <form th:action="@{/register}" method="post">
+        <div class="form-group">
+            <label for="email" data-i18n="registerPage.email">Email:</label><br>
+            <input type="email" id="email" name="email" class="form-input" autocomplete="email" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password" data-i18n="registerPage.password">Password:</label><br>
+            <input type="password" id="password" name="password" class="form-input" autocomplete="new-password"
+                   minlength="8" required>
+        </div>
+
+        <div class="form-group">
+            <label for="confirmPassword" data-i18n="registerPage.confirmPassword">Confirm password:</label><br>
+            <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" autocomplete="new-password"
+                   minlength="8" required>
+        </div>
+
+        <button type="submit" class="search-button" data-i18n="registerPage.submit">Create account</button>
+    </form>
+
+</div>
+
+<div class="back-links">
+    <a th:href="@{|${langPrefix}/login|}" data-i18n="registerPage.haveAccount">Already have an account? Log in</a>
+    <span> · </span>
+    <a th:href="@{|${langPrefix}/|}" data-i18n="loginPage.backHome">Back to home</a>
+</div>
+
+</body>
+</html>

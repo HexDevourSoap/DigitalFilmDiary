@@ -7,6 +7,8 @@ import lv.venta.fidi.model.AppUser;
 
 public interface IAppUserService {
 
+    public abstract void registerNewUser(String email, String rawPassword) throws Exception;
+
     public abstract void create(String email, String passwordHash, Long authorityId) throws Exception;
 
     public abstract void update(Long id, String email, String passwordHash, Long authorityId) throws Exception;

@@ -26,6 +26,10 @@
         <p class="message-success" data-i18n="loginPage.logoutOk">You have been logged out</p>
     </div>
 
+    <div th:if="${param.registered}">
+        <p class="message-success" data-i18n="loginPage.registered">Account created. You can sign in now.</p>
+    </div>
+
     <form th:action="@{/login}" method="post">
         <div class="form-group">
             <label for="username" data-i18n="loginPage.email">Email:</label><br>
@@ -43,6 +47,8 @@
 </div>
 
 <div class="back-links">
+    <a th:href="@{|${langPrefix}/register|}" data-i18n="loginPage.noAccount">No account yet? Register</a>
+    <span> · </span>
     <a th:href="@{|${langPrefix}/|}" data-i18n="loginPage.backHome">Back to home</a>
 </div>
 

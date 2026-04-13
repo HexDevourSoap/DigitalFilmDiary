@@ -12,10 +12,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-/**
- * Rewrites {@code /lv/...} and {@code /en/...} to the normal Spring paths so existing
- * controllers stay unchanged. Sets {@code LANG_PREFIX} and {@code APP_LANG} for Thymeleaf.
- */
+
 public class LocalePathFilter extends OncePerRequestFilter {
 
     private static final List<String> LANGS = List.of("lv", "en");

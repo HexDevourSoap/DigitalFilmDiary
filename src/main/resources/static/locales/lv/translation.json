@@ -8,6 +8,7 @@
     "diary": "Mana dienasgrāmata",
     "recommendations": "Ieteikumi",
     "login": "Pieslēgties",
+    "register": "Reģistrēties",
     "logout": "Iziet",
     "loggedInAs": "Pieslēdzies kā:"
   },
@@ -56,10 +57,22 @@
     "title": "Pieteikties",
     "error": "Nepareizs e-pasts vai parole",
     "logoutOk": "Jūs esat izgājis",
+    "registered": "Konts izveidots. Tagad vari pieslēgties.",
     "email": "E-pasts:",
     "password": "Parole:",
     "submit": "Pieteikties",
-    "backHome": "Atpakaļ uz sākumu"
+    "backHome": "Atpakaļ uz sākumu",
+    "noAccount": "Nav konta? Reģistrējies"
+  },
+  "registerPage": {
+    "title": "Izveidot kontu",
+    "email": "E-pasts:",
+    "password": "Parole (vismaz 8 rakstzīmes):",
+    "confirmPassword": "Atkārtot paroli:",
+    "submit": "Izveidot kontu",
+    "haveAccount": "Jau ir konts? Pieslēdzies",
+    "passwordMismatch": "Paroles nesakrīt.",
+    "errorPrefix": "Neizdevās reģistrēties:"
   },
   "diaryPage": {
     "title": "Mana filmu dienasgrāmata",

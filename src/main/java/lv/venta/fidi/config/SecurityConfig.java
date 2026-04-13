@@ -33,7 +33,7 @@ public class SecurityConfig {
         http
             .authenticationProvider(authProvider)
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/movies/**", "/css/**", "/js/**", "/images/**", "/login").permitAll()
+                .requestMatchers("/", "/movies/**", "/css/**", "/js/**", "/images/**", "/login", "/register").permitAll()
                 .requestMatchers("/diary/**", "/watch-events/**", "/ratings/**").authenticated()
                 .anyRequest().permitAll()
             )

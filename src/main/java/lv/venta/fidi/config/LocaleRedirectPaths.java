@@ -2,9 +2,7 @@ package lv.venta.fidi.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-/**
- * Builds redirect targets that preserve the {@code /lv} or {@code /en} prefix set by {@link LocalePathFilter}.
- */
+
 public final class LocaleRedirectPaths {
 
     private LocaleRedirectPaths() {
@@ -13,6 +11,14 @@ public final class LocaleRedirectPaths {
     public static String redirectDiary(HttpServletRequest request) {
         String prefix = langPrefix(request);
         return "redirect:" + prefix + "/diary";
+    }
+
+    
+    public static String redirectLogin(HttpServletRequest request, String queryWithoutQuestionMark) {
+        String prefix = langPrefix(request);
+        String q = (queryWithoutQuestionMark == null || queryWithoutQuestionMark.isBlank()) ? ""
+                : "?" + queryWithoutQuestionMark;
+        return "redirect:" + prefix + "/login" + q;
     }
 
     private static String langPrefix(HttpServletRequest request) {

@@ -20,6 +20,7 @@
 
         <div class="nav-cluster nav-cluster--user">
             <span sec:authorize="isAnonymous()">
+                <a class="nav-btn nav-btn--ghost" th:href="@{|${langPrefix}/register|}" data-i18n="nav.register">Register</a>
                 <a class="nav-btn nav-btn--accent" th:href="@{|${langPrefix}/login|}" data-i18n="nav.login">Login</a>
             </span>
 
