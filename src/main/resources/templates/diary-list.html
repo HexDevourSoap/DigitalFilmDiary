@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" th:href="@{/style.css}">
     <th:block th:replace="~{fragments/site-chrome :: i18nScripts}"></th:block>
+    <script th:src="@{/plot-translate.js}" defer></script>
     <script th:src="@{/theme.js}" defer></script>
 </head>
 <body>
@@ -25,7 +26,9 @@
     <div th:each="entry : ${diaryEntries}">
         <hr>
 
-        <h3 th:text="${movieMap[entry.imdbId] != null ? movieMap[entry.imdbId].title : entry.imdbId}">
+        <h3 class="movie-title-translate"
+            th:attr="data-en=${movieMap[entry.imdbId] != null ? movieMap[entry.imdbId].title : entry.imdbId}"
+            th:text="${movieMap[entry.imdbId] != null ? movieMap[entry.imdbId].title : entry.imdbId}">
             Movie Title
         </h3>
 

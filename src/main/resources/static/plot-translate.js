@@ -15,6 +15,13 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
+        document.querySelectorAll(".movie-title-translate").forEach(function (el) {
+            var t = el.getAttribute("data-en");
+            if (t) {
+                items.push({ el: el, en: t });
+            }
+        });
+
         document.querySelectorAll("li.genre-translate").forEach(function (li) {
             var g = li.getAttribute("data-en");
             if (g) {
