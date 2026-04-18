@@ -81,7 +81,8 @@ public class MovieController {
     }
 
     @GetMapping("/search")
-    public String searchMovies(@RequestParam("query") String query, Model model, HttpServletRequest request) {
+    public String searchMovies(@RequestParam(value = "query", required = false) String query, Model model,
+                               HttpServletRequest request) {
         try {
             String appLang = RequestLang.appLang(request);
             if (query == null || query.isBlank()) {

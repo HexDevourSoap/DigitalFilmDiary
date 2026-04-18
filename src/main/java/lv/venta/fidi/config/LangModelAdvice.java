@@ -38,10 +38,17 @@ public class LangModelAdvice {
     private static String langSwitchUrl(HttpServletRequest request, String lang) {
         String ctx = request.getContextPath();
         String tail = pathWithoutLang(relativeUri(request));
+        String base;
         if ("/".equals(tail)) {
-            return ctx + "/" + lang;
+            base = ctx + "/" + lang;
+        } else {
+            base = ctx + "/" + lang + tail;
         }
-        return ctx + "/" + lang + tail;
+        String qs = request.getQueryString();
+        if (qs == null || qs.isBlank()) {
+            return base;
+        }
+        return base + "?" + qs;
     }
 
     private static String relativeUri(HttpServletRequest request) {

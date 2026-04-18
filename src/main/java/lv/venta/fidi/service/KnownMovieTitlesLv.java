@@ -28,7 +28,7 @@ public final class KnownMovieTitlesLv {
         p("tt0167261", "Gredzenu pavēlnieks: Divi torņi");
         p("tt0167263", "Gredzenu pavēlnieks: Atgriešanās karalis");
         p("tt0060196", "Labs, slikts, ļauns");
-        p("tt0903747", "Breaking Bad");
+        p("tt0903747", "Pārkāpt robežu");
         p("tt0126029", "Šreks");
         p("tt0298148", "Šreks 2");
         p("tt0413267", "Šreks Trešais");
