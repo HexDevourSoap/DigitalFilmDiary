@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -17,6 +18,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class PlotTranslationService {
+
+    /** In-memory cache for short EN→LV strings (movie titles, etc.) to avoid repeated MyMemory calls. */
+    private static final int TITLE_CACHE_CAP = 6_000;
+    private final ConcurrentHashMap<String, String> shortEnToLvCache = new ConcurrentHashMap<>();
 
     private static final int MAX_INPUT = 12_000;
     private static final int CHUNK = 420;
@@ -143,7 +148,7 @@ public class PlotTranslationService {
         for (String raw : inputs) {
             if (!first) {
                 try {
-                    Thread.sleep(120);
+                    Thread.sleep(10);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     break;
@@ -175,6 +180,10 @@ public class PlotTranslationService {
         if (known != null) {
             return known;
         }
+        String hit = shortEnToLvCache.get(t);
+        if (hit != null) {
+            return hit;
+        }
         if (t.length() > 450) {
             return translateEnToLv(t);
         }
@@ -183,7 +192,11 @@ public class PlotTranslationService {
             if (part == null || part.isBlank()) {
                 return t;
             }
-            return normalizeTranslationOutput(part);
+            String out = normalizeTranslationOutput(part);
+            if (shortEnToLvCache.size() < TITLE_CACHE_CAP) {
+                shortEnToLvCache.putIfAbsent(t, out);
+            }
+            return out;
         } catch (Exception e) {
             return t;
         }

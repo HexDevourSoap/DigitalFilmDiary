@@ -1,17 +1,31 @@
-document.addEventListener("DOMContentLoaded", function () {
-    var lang = document.documentElement.getAttribute("data-app-lang");
+(function () {
+    function apiPrefix() {
+        if (typeof window.__APP_ROOT__ !== "string") {
+            return "";
+        }
+        return window.__APP_ROOT__.replace(/\/*$/, "");
+    }
+
+    /** Match server / URL language (i18next may be source of truth after init). */
+    function getUiLang() {
+        if (typeof i18next !== "undefined" && i18next.isInitialized && i18next.language) {
+            return String(i18next.language).toLowerCase().split("-")[0];
+        }
+        var a = document.documentElement.getAttribute("data-app-lang");
+        return a ? String(a).toLowerCase().split("-")[0] : "lv";
+    }
 
     function translateShortLabels() {
-        if (lang !== "lv") {
+        if (getUiLang() !== "lv") {
             return Promise.resolve();
         }
 
         var titleEl = document.getElementById("movie-title-text");
         var items = [];
         if (titleEl) {
-            var t = titleEl.getAttribute("data-en");
-            if (t) {
-                items.push({ el: titleEl, en: t });
+            var t0 = titleEl.getAttribute("data-en");
+            if (t0) {
+                items.push({ el: titleEl, en: t0 });
             }
         }
 
@@ -42,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        return fetch("/api/translate/batch", {
+        return fetch(apiPrefix() + "/api/translate/batch", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ texts: unique }),
@@ -51,16 +65,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 return r.ok ? r.json() : Promise.reject(new Error("batch"));
             })
             .then(function (data) {
-                if (!data || !data.texts || data.texts.length !== unique.length) {
+                if (!data || !data.texts || !Array.isArray(data.texts)) {
                     return;
                 }
+                var texts = data.texts;
                 var map = {};
                 unique.forEach(function (en, i) {
-                    map[en] = data.texts[i];
+                    if (i < texts.length && texts[i] != null && String(texts[i]).length > 0) {
+                        map[en] = String(texts[i]);
+                    }
                 });
                 items.forEach(function (it) {
-                    if (map[it.en]) {
-                        it.el.textContent = map[it.en];
+                    var tr = map[it.en];
+                    if (tr != null && tr.length > 0) {
+                        it.el.textContent = tr;
                     }
                 });
                 if (titleEl) {
@@ -82,7 +100,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function translatePlot() {
         var en = window.__MOVIE_PLOT_EN__;
-        if (lang !== "lv" || !en) {
+        if (getUiLang() !== "lv" || !en) {
             return Promise.resolve();
         }
 
@@ -93,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         el.classList.add("movie-plot--translating");
 
-        return fetch("/api/translate/plot", {
+        return fetch(apiPrefix() + "/api/translate/plot", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ text: en }),
@@ -112,6 +130,23 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
 
-    translateShortLabels();
-    translatePlot();
-});
+    var translationsRan = false;
+
+    function runTranslationsOnce() {
+        if (translationsRan) {
+            return;
+        }
+        translationsRan = true;
+        translateShortLabels();
+        translatePlot();
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("i18n:ready", runTranslationsOnce);
+        setTimeout(function () {
+            if (!translationsRan && getUiLang() === "lv") {
+                runTranslationsOnce();
+            }
+        }, 900);
+    });
+})();

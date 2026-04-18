@@ -6,7 +6,10 @@
 <th:block th:fragment="i18nScripts">
     <script src="https://cdn.jsdelivr.net/npm/i18next@23.11.5/i18next.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/i18next-http-backend@2.5.2/i18nextHttpBackend.min.js"></script>
-    <script th:src="@{/i18n-boot.js}" defer></script>
+    <script th:inline="javascript">
+        window.__APP_ROOT__ = /*[[@{/}]]*/ "/";
+    </script>
+    <script th:src="@{/i18n-boot.js(v=20260418)}" defer></script>
 </th:block>
 
 <header th:fragment="siteHeader" class="site-header hud-shell">

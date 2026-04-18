@@ -1,5 +1,6 @@
 package lv.venta.fidi.controller;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,10 +10,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import jakarta.servlet.http.HttpServletRequest;
+import lv.venta.fidi.config.RequestLang;
 import lv.venta.fidi.model.Genre;
 import lv.venta.fidi.model.Movie;
 import lv.venta.fidi.repo.IGenreRepo;
 import lv.venta.fidi.service.IMovieService;
+import lv.venta.fidi.service.MovieTitleUiService;
 
 @Controller
 public class HomeController {
@@ -23,11 +27,14 @@ public class HomeController {
     @Autowired
     private IGenreRepo genreRepo;
 
+    @Autowired
+    private MovieTitleUiService movieTitleUiService;
+
     @GetMapping("/")
-    public String home(Model model) {
+    public String home(Model model, HttpServletRequest request) {
         try {
-            List<Movie> allMovies = movieService.getAllMovies();
-            List<Movie> trendingMovies = allMovies.subList(0, Math.min(12, allMovies.size()));
+            String appLang = RequestLang.appLang(request);
+            List<Movie> trendingMovies = movieService.getHomeTrendingPreview(12);
             List<Genre> genres = genreRepo.findAll();
 
             Map<Long, Movie> genrePreview = new HashMap<>();
@@ -42,6 +49,8 @@ public class HomeController {
             }
 
             model.addAttribute("movies", trendingMovies);
+            model.addAttribute("lvTitleByMovieId", movieTitleUiService.mapLvTitlesByMovieId(appLang, trendingMovies));
+            model.addAttribute("lvTitleByImdbId", Collections.emptyMap());
             model.addAttribute("genres", genres);
             model.addAttribute("genrePreview", genrePreview);
 

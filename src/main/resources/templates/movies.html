@@ -35,7 +35,8 @@
 
             <a th:href="@{|${langPrefix}/movies/imdb/${movie.imdbID}|}">
 
-                <h3 th:text="${movie.title}" class="movie-title">Movie Title</h3>
+                <h3 class="movie-title"
+                    th:text="${lvTitleByImdbId[movie.imdbID] != null ? lvTitleByImdbId[movie.imdbID] : movie.title}">Movie Title</h3>
 
                 <img th:if="${movie.poster != null and !#strings.isEmpty(movie.poster) and movie.poster != 'N/A'}"
                      th:src="${movie.poster}"
@@ -79,11 +80,12 @@
     </div>
 
     <div class="movie-grid">
-        <div th:each="movie : ${fallbackMovies}" class="movie-card">
+        <div th:each="movie : ${fallbackMovies}" class="movie-card" th:with="mid=${T(java.lang.String).valueOf(movie.movieId)}">
 
             <a th:href="@{|${langPrefix}/movies/${movie.movieId}|}">
 
-                <h3 th:text="${movie.title}" class="movie-title">Movie Title</h3>
+                <h3 class="movie-title"
+                    th:text="${lvTitleByMovieId != null and lvTitleByMovieId.containsKey(mid) ? lvTitleByMovieId.get(mid) : movie.title}">Movie Title</h3>
 
                 <img th:if="${movie.posterUrl != null and !#strings.isEmpty(movie.posterUrl)}"
                      th:src="${movie.posterUrl}"
@@ -131,11 +133,12 @@
     </div>
 
     <div class="movie-grid">
-        <div th:each="movie : ${movies}" class="movie-card">
+        <div th:each="movie : ${movies}" class="movie-card" th:with="mid=${T(java.lang.String).valueOf(movie.movieId)}">
 
             <a th:href="@{|${langPrefix}/movies/${movie.movieId}|}">
 
-                <h3 th:text="${movie.title}" class="movie-title">Movie Title</h3>
+                <h3 class="movie-title"
+                    th:text="${lvTitleByMovieId != null and lvTitleByMovieId.containsKey(mid) ? lvTitleByMovieId.get(mid) : movie.title}">Movie Title</h3>
 
                 <img th:if="${movie.posterUrl != null and !#strings.isEmpty(movie.posterUrl)}"
                      th:src="${movie.posterUrl}"

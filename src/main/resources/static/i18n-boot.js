@@ -1,6 +1,19 @@
 (function () {
+    function appRoot() {
+        if (typeof window.__APP_ROOT__ !== "string") {
+            return "";
+        }
+        return window.__APP_ROOT__.replace(/\/*$/, "");
+    }
+
+    /** Locale from URL: /en/... or /{context}/en/... */
     function pathLang() {
-        var m = location.pathname.match(/^\/(lv|en)(\/|$)/);
+        var path = location.pathname;
+        var m = path.match(/^\/(lv|en)(\/|$)/);
+        if (m) {
+            return m[1];
+        }
+        m = path.match(/^\/[^/]+\/(lv|en)(\/|$)/);
         return m ? m[1] : null;
     }
 
@@ -47,8 +60,14 @@
     document.addEventListener("DOMContentLoaded", function () {
         var fromPath = pathLang();
         var serverLang = document.documentElement.getAttribute("data-app-lang");
-        // URL prefix wins; else server-rendered lang (e.g. default lv); else last choice in localStorage
+        // URL prefix wins; else server-rendered lang; else localStorage (must not override /en when JSON failed before)
         var lng = fromPath || serverLang || localStorage.getItem("i18nextLng") || "lv";
+        if (lng) {
+            lng = String(lng).toLowerCase().split("-")[0];
+        }
+
+        var root = appRoot();
+        var localePath = (root ? root + "/" : "/") + "locales/{{lng}}/{{ns}}.json";
 
         i18next.use(i18nextHttpBackend).init(
             {
@@ -58,7 +77,7 @@
                 ns: ["translation"],
                 defaultNS: "translation",
                 backend: {
-                    loadPath: "/locales/{{lng}}/{{ns}}.json",
+                    loadPath: localePath,
                 },
             },
             function (err) {

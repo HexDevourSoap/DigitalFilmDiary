@@ -8,6 +8,9 @@ public interface IMovieService {
 
     public abstract List<Movie> getAllMovies() throws Exception;
 
+    /** First page of movies for home “trending” strip (bounded DB read — do not load entire catalog). */
+    public abstract List<Movie> getHomeTrendingPreview(int limit) throws Exception;
+
     public abstract Movie getMovieById(Long id) throws Exception;
 
     public abstract Movie getOrCreateByImdbId(String imdbId) throws Exception;

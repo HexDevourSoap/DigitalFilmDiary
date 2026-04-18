@@ -17,50 +17,106 @@
 
 <hr>
 
-<div class="diary-section">
-    <h2 class="section-title" data-i18n="diaryPage.sectionSaved">Saved / Planned / Watching</h2>
-    <div th:if="${diaryEntries == null or #lists.isEmpty(diaryEntries)}">
-        <p data-i18n="diaryPage.emptyEntries">No diary entries yet.</p>
-    </div>
+<div class="diary-layout">
+    <div class="diary-section">
+        <h2 class="section-title" data-i18n="diaryPage.sectionSaved">Saved / Planned / Watching</h2>
+        <div th:if="${diaryEntries == null or #lists.isEmpty(diaryEntries)}">
+            <p data-i18n="diaryPage.emptyEntries">No diary entries yet.</p>
+        </div>
 
-    <div th:each="entry : ${diaryEntries}">
-        <hr>
+        <div th:each="entry : ${diaryEntries}">
+            <hr>
 
-        <h3 class="movie-title-translate"
-            th:attr="data-en=${movieMap[entry.imdbId] != null ? movieMap[entry.imdbId].title : entry.imdbId}"
-            th:text="${movieMap[entry.imdbId] != null ? movieMap[entry.imdbId].title : entry.imdbId}">
-            Movie Title
-        </h3>
+            <h3 th:text="${movieMap[entry.imdbId] != null ? movieMap[entry.imdbId].title : entry.imdbId}">
+                Movie Title
+            </h3>
 
-        <img th:if="${movieMap[entry.imdbId] != null and movieMap[entry.imdbId].poster != null and !#strings.isEmpty(movieMap[entry.imdbId].poster) and movieMap[entry.imdbId].poster != 'N/A'}"
-             th:src="${movieMap[entry.imdbId].poster}"
-             data-i18n-alt="home.posterAlt"
-             alt="Poster"
-             class="poster">
+            <img th:if="${movieMap[entry.imdbId] != null and movieMap[entry.imdbId].poster != null and !#strings.isEmpty(movieMap[entry.imdbId].poster) and movieMap[entry.imdbId].poster != 'N/A'}"
+                 th:src="${movieMap[entry.imdbId].poster}"
+                 data-i18n-alt="home.posterAlt"
+                 alt="Poster"
+                 class="poster"
+                 loading="lazy"
+                 decoding="async">
 
-        <p><span data-i18n="diaryPage.status">Status:</span> <span th:text="${entry.status}">WATCHED</span></p>
+            <div th:if="${movieMap[entry.imdbId] == null or movieMap[entry.imdbId].poster == null or #strings.isEmpty(movieMap[entry.imdbId].poster) or movieMap[entry.imdbId].poster == 'N/A'}"
+                 class="no-poster"
+                 data-i18n="home.noPoster">
+                No poster
+            </div>
 
-        <p th:if="${entry.plannedDate != null}">
-            <span data-i18n="diaryPage.plannedDate">Planned date:</span> <span th:text="${entry.plannedDate}">2026-03-20</span>
-        </p>
+            <p><span data-i18n="diaryPage.status">Status:</span> <span th:text="${entry.status}">WATCHED</span></p>
 
-        <p th:if="${entry.notes != null and !#strings.isEmpty(entry.notes)}">
-            <span data-i18n="diaryPage.notes">Notes:</span> <span th:text="${entry.notes}">My thoughts</span>
-        </p>
+            <p th:if="${entry.plannedDate != null}">
+                <span data-i18n="diaryPage.plannedDate">Planned date:</span> <span th:text="${entry.plannedDate}">2026-03-20</span>
+            </p>
 
-        <p th:if="${ratingMap[entry.imdbId] != null}">
-            <span data-i18n="diaryPage.yourRating">Your rating:</span> <span th:text="${ratingMap[entry.imdbId].ratingValue}">8</span>/10
-        </p>
+            <p th:if="${entry.notes != null and !#strings.isEmpty(entry.notes)}">
+                <span data-i18n="diaryPage.notes">Notes:</span> <span th:text="${entry.notes}">My thoughts</span>
+            </p>
 
-        <p th:if="${ratingMap[entry.imdbId] == null}">
-            <span data-i18n="diaryPage.yourRating">Your rating:</span> <span data-i18n="diaryPage.notRated">not rated yet</span>
-        </p>
+            <p th:if="${ratingMap[entry.imdbId] != null}">
+                <span data-i18n="diaryPage.yourRating">Your rating:</span> <span th:text="${ratingMap[entry.imdbId].ratingValue}">8</span>/10
+            </p>
 
-        <div class="button-group">
-            <a th:href="@{|${langPrefix}/diary/update/${entry.userMovieId}|}" class="action-button" data-i18n="diaryPage.edit">Edit</a>
-            <a th:href="@{|${langPrefix}/diary/delete/${entry.userMovieId}|}" class="action-button secondary-button" data-i18n="diaryPage.delete">Delete</a>
+            <p th:if="${ratingMap[entry.imdbId] == null}">
+                <span data-i18n="diaryPage.yourRating">Your rating:</span> <span data-i18n="diaryPage.notRated">not rated yet</span>
+            </p>
+
+            <div class="button-group">
+                <a th:href="@{|${langPrefix}/diary/update/${entry.userMovieId}|}" class="action-button" data-i18n="diaryPage.edit">Edit</a>
+                <a th:href="@{|${langPrefix}/diary/delete/${entry.userMovieId}|}" class="action-button secondary-button" data-i18n="diaryPage.delete">Delete</a>
+            </div>
         </div>
     </div>
+
+    <aside class="diary-section diary-stats-panel">
+        <h2 class="section-title" data-i18n="diaryPage.statsTitle">Statistics by period</h2>
+
+        <form th:action="@{|${langPrefix}/diary|}" method="get" class="stats-filter-form">
+            <div class="form-group">
+                <label for="fromDate" data-i18n="diaryPage.statsFrom">From:</label><br>
+                <input id="fromDate" name="from" type="date" class="form-input" th:value="${statsFrom}">
+            </div>
+            <div class="form-group">
+                <label for="toDate" data-i18n="diaryPage.statsTo">To:</label><br>
+                <input id="toDate" name="to" type="date" class="form-input" th:value="${statsTo}">
+            </div>
+            <button type="submit" class="search-button" data-i18n="diaryPage.statsApply">Show statistics</button>
+        </form>
+
+        <div class="stats-block">
+            <h3 data-i18n="diaryPage.statsWatchedPerMonth">Watched movies per month</h3>
+            <div th:if="${watchedPerMonth == null or #maps.isEmpty(watchedPerMonth)}">
+                <p data-i18n="diaryPage.statsNoData">No data for selected period.</p>
+            </div>
+            <ul th:if="${watchedPerMonth != null and !#maps.isEmpty(watchedPerMonth)}">
+                <li th:each="monthEntry : ${watchedPerMonth.entrySet()}">
+                    <span th:text="${monthEntry.key}">2026-05</span>: <span th:text="${monthEntry.value}">2</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="stats-block">
+            <h3 data-i18n="diaryPage.statsAvgRating">Average rating in period</h3>
+            <p th:if="${averageRatingPeriod != null}">
+                <strong th:text="${averageRatingPeriod}">8.5</strong>/10
+            </p>
+            <p th:if="${averageRatingPeriod == null}" data-i18n="diaryPage.statsNoData">No data for selected period.</p>
+        </div>
+
+        <div class="stats-block">
+            <h3 data-i18n="diaryPage.statsTopGenres">Top genres in period</h3>
+            <div th:if="${topGenresPeriod == null or #lists.isEmpty(topGenresPeriod)}">
+                <p data-i18n="diaryPage.statsNoData">No data for selected period.</p>
+            </div>
+            <ol th:if="${topGenresPeriod != null and !#lists.isEmpty(topGenresPeriod)}">
+                <li th:each="genreEntry : ${topGenresPeriod}">
+                    <span th:text="${genreEntry.key}">Drama</span> (<span th:text="${genreEntry.value}">3</span>)
+                </li>
+            </ol>
+        </div>
+    </aside>
 </div>
 
 <div class="back-links">

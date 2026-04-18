@@ -21,10 +21,11 @@
 </div>
 
 <div class="movie-grid" th:if="${recommendations != null and !#lists.isEmpty(recommendations)}">
-    <div th:each="rec : ${recommendations}" class="movie-card">
+    <div th:each="rec : ${recommendations}" class="movie-card" th:with="mid=${T(java.lang.String).valueOf(rec.movie.movieId)}">
 
         <a th:href="@{|${langPrefix}/movies/${rec.movie.movieId}|}">
-            <h3 th:text="${rec.movie.title}" class="movie-title">Movie Title</h3>
+            <h3 class="movie-title"
+                th:text="${lvTitleByMovieId != null and lvTitleByMovieId.containsKey(mid) ? lvTitleByMovieId.get(mid) : rec.movie.title}">Movie Title</h3>
 
             <img th:if="${rec.movie.posterUrl != null and !#strings.isEmpty(rec.movie.posterUrl)}"
                  th:src="${rec.movie.posterUrl}"
@@ -53,16 +54,11 @@
         </p>
 
         <p>
-            <strong data-i18n="recoPage.score">Score:</strong>
-            <span th:text="${rec.score}">5.0</span>
-        </p>
-
-        <p>
             <strong data-i18n="recoPage.reason">Reason:</strong>
             <span th:text="${rec.reason}">Because you like Sci-Fi</span>
         </p>
 
-        <div class="button-group">
+        <div class="button-group reco-actions">
             <a th:href="@{|${langPrefix}/movies/${rec.movie.movieId}|}" class="action-button" data-i18n="recoPage.viewMovie">View movie</a>
             <a th:href="@{|${langPrefix}/diary/create/${rec.movie.imdbId}|}" class="action-button" data-i18n="recoPage.addDiary">Add to diary</a>
         </div>

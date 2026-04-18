@@ -8,6 +8,8 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import lv.venta.fidi.dto.OmdbMovieDto;
@@ -38,6 +40,18 @@ public class MovieServiceImpl implements IMovieService {
     }
 
     @Override
+    public List<Movie> getHomeTrendingPreview(int limit) throws Exception {
+        if (limit < 1) {
+            return List.of();
+        }
+        return movieRepo.findAll(PageRequest.of(
+                0,
+                limit,
+                Sort.by(Sort.Direction.DESC, "imdbRating").and(Sort.by(Sort.Direction.DESC, "movieId"))
+        )).getContent();
+    }
+
+    @Override
     public Movie getMovieById(Long id) throws Exception {
         if (id == null || id < 0) {
             throw new Exception("Movie ID cannot be null or negative");
@@ -54,10 +68,14 @@ public class MovieServiceImpl implements IMovieService {
         }
 
         imdbId = imdbId.trim();
+        Movie existingMovie = movieRepo.findByImdbId(imdbId).orElse(null);
 
         OmdbMovieDto dto = omdbClient.getByImdbId(imdbId);
 
         if (dto == null || dto.getImdbID() == null || dto.getImdbID().isBlank()) {
+            if (existingMovie != null) {
+                return existingMovie;
+            }
             throw new Exception("Movie was not found in OMDb");
         }
 
@@ -97,14 +115,15 @@ public class MovieServiceImpl implements IMovieService {
             imdbRating = null;
         }
 
-        Movie movie = movieRepo.findByImdbId(imdbId)
-                .orElse(new Movie(
+        Movie movie = existingMovie != null
+                ? existingMovie
+                : new Movie(
                         dto.getImdbID(),
                         dto.getTitle(),
                         year,
                         runtime,
                         dto.getPlot()
-                ));
+                );
 
         movie.setImdbId(dto.getImdbID());
         movie.setTitle(dto.getTitle());

@@ -16,18 +16,25 @@
 
 <hr>
 
+<p class="info-text" th:if="${totalMovies != null}">
+    <span th:text="${totalMovies}">0</span> movies
+</p>
+
 <div class="movie-grid">
-    <div th:each="m : ${movies}" class="movie-card">
+    <div th:each="m : ${movies}" class="movie-card" th:with="mid=${T(java.lang.String).valueOf(m.movieId)}">
 
         <a th:href="@{|${langPrefix}/movies/${m.movieId}|}">
 
-            <h3 th:text="${m.title}" class="movie-title">Movie Title</h3>
+            <h3 class="movie-title"
+                th:text="${lvTitleByMovieId != null and lvTitleByMovieId.containsKey(mid) ? lvTitleByMovieId.get(mid) : m.title}">Movie Title</h3>
 
             <img th:if="${m.posterUrl != null and !#strings.isEmpty(m.posterUrl)}"
                  th:src="${m.posterUrl}"
                  class="poster"
                  data-i18n-alt="home.posterAlt"
                  alt="Poster"
+                 loading="lazy"
+                 decoding="async"
                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
 
             <div th:if="${m.posterUrl != null and !#strings.isEmpty(m.posterUrl)}"
@@ -45,6 +52,18 @@
         </a>
 
     </div>
+</div>
+
+<div class="pagination-row" th:if="${totalPages != null and totalPages > 1}">
+    <a th:if="${hasPrev}"
+       th:href="@{|${langPrefix}/genres/${genre.genreId}?page=${page - 1}&size=${size}|}"
+       class="nav-btn nav-btn--ghost">← Prev</a>
+    <span class="info-text">
+        Page <span th:text="${page + 1}">1</span> / <span th:text="${totalPages}">1</span>
+    </span>
+    <a th:if="${hasNext}"
+       th:href="@{|${langPrefix}/genres/${genre.genreId}?page=${page + 1}&size=${size}|}"
+       class="nav-btn nav-btn--ghost">Next →</a>
 </div>
 
 <div class="back-links">

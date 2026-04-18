@@ -4,7 +4,7 @@
       th:attr="lang=${appLang},data-app-lang=${appLang}">
 
 <head>
-    <title th:text="${movie.title}">Movie</title>
+    <title th:text="${movieDisplayTitle}">Movie</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" th:href="@{/style.css}">
@@ -15,7 +15,7 @@
 <body>
 
 <h1 class="page-title">
-    <span id="movie-title-text" th:attr="data-en=${movie.title}" th:text="${movie.title}">Movie title</span>
+    <span th:text="${movieDisplayTitle}">Movie title</span>
 </h1>
 <header th:replace="~{fragments/site-chrome :: siteHeader}"></header>
 <hr>
@@ -25,7 +25,7 @@
     <div class="movie-details-poster">
         <img th:if="${movie.posterUrl != null and !#strings.isEmpty(movie.posterUrl)}"
              th:src="${movie.posterUrl}"
-             th:alt="${movie.title}"
+             th:alt="${movieDisplayTitle}"
              class="poster poster--large"
              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
 

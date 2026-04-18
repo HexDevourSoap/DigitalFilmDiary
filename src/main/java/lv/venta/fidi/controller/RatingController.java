@@ -11,11 +11,13 @@ import org.springframework.validation.BindingResult;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lv.venta.fidi.config.LocaleRedirectPaths;
+import lv.venta.fidi.config.RequestLang;
 import lv.venta.fidi.dto.OmdbMovieDto;
 import lv.venta.fidi.model.AppUser;
 import lv.venta.fidi.model.Rating;
 import lv.venta.fidi.repo.IAppUserRepo;
 import lv.venta.fidi.service.IRatingService;
+import lv.venta.fidi.service.MovieTitleUiService;
 import lv.venta.fidi.service.OmdbClient;
 
 @Controller
@@ -31,15 +33,21 @@ public class RatingController {
     @Autowired
     private OmdbClient omdbClient;
 
+    @Autowired
+    private MovieTitleUiService movieTitleUiService;
+
     @GetMapping("/create/{imdbId}")
-    public String showCreateForm(@PathVariable String imdbId, Model model) {
+    public String showCreateForm(@PathVariable String imdbId, Model model, HttpServletRequest request) {
         try {
+            String appLang = RequestLang.appLang(request);
             Rating rating = new Rating();
             OmdbMovieDto movie = omdbClient.getByImdbId(imdbId);
 
             if (movie == null || movie.getImdbID() == null || movie.getImdbID().isBlank()) {
                 throw new Exception("Movie with IMDb ID " + imdbId + " was not found");
             }
+
+            movieTitleUiService.localizeOmdbTitle(appLang, movie);
 
             model.addAttribute("rating", rating);
             model.addAttribute("movie", movie);
@@ -59,6 +67,7 @@ public class RatingController {
                          HttpServletRequest request,
                          Model model) {
         try {
+            String appLang = RequestLang.appLang(request);
             OmdbMovieDto movie = omdbClient.getByImdbId(imdbId);
 
             if (movie == null || movie.getImdbID() == null || movie.getImdbID().isBlank()) {
@@ -66,6 +75,7 @@ public class RatingController {
             }
 
             if (result.hasErrors()) {
+                movieTitleUiService.localizeOmdbTitle(appLang, movie);
                 model.addAttribute("movie", movie);
                 return "rating-form";
             }
@@ -83,10 +93,13 @@ public class RatingController {
     }
 
     @GetMapping("/update/{id}")
-    public String showEditForm(@PathVariable Long id, Model model) {
+    public String showEditForm(@PathVariable Long id, Model model, HttpServletRequest request) {
         try {
+            String appLang = RequestLang.appLang(request);
             Rating rating = ratingService.retrieveById(id);
             OmdbMovieDto movie = omdbClient.getByImdbId(rating.getImdbId());
+
+            movieTitleUiService.localizeOmdbTitle(appLang, movie);
 
             model.addAttribute("rating", rating);
             model.addAttribute("movie", movie);
@@ -105,8 +118,10 @@ public class RatingController {
                          HttpServletRequest request,
                          Model model) {
         try {
+            String appLang = RequestLang.appLang(request);
             if (result.hasErrors()) {
                 OmdbMovieDto movie = omdbClient.getByImdbId(rating.getImdbId());
+                movieTitleUiService.localizeOmdbTitle(appLang, movie);
                 model.addAttribute("movie", movie);
                 return "rating-edit-page";
             }

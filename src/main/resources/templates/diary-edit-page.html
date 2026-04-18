@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" th:href="@{/style.css}">
     <th:block th:replace="~{fragments/site-chrome :: i18nScripts}"></th:block>
+    <script th:src="@{/plot-translate.js}" defer></script>
     <script th:src="@{/theme.js}" defer></script>
 </head>
 <body>
@@ -20,6 +21,17 @@
 
     <div th:if="${movie != null}">
         <h2 th:text="${movie.title}">Movie Title</h2>
+        <div th:if="${movie.plot != null and !#strings.isEmpty(movie.plot)}">
+            <h3 data-i18n="movie.plot">Plot</h3>
+            <p id="movie-plot-text" th:text="${movie.plot}">Movie description</p>
+            <script th:inline="javascript">
+                window.__MOVIE_PLOT_EN__ = /*[[${movie.plot}]]*/ '';
+            </script>
+        </div>
+        <div th:if="${movie.genre != null and !#strings.isEmpty(movie.genre)}">
+            <h3 data-i18n="movie.genres">Genres</h3>
+            <p th:text="${movie.genre}">Crime, Drama</p>
+        </div>
     </div>
 
     <form th:action="@{|${langPrefix}/diary/update/${userMovie.userMovieId}|}" th:object="${userMovie}" method="post">

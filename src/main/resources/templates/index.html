@@ -35,7 +35,7 @@
 
 <div class="movie-grid">
 
-    <div th:each="m : ${movies}" class="home-movie-card">
+    <div th:each="m : ${movies}" class="home-movie-card" th:with="mid=${T(java.lang.String).valueOf(m.movieId)}">
 
         <a th:href="@{|${langPrefix}/movies/${m.movieId}|}">
 
@@ -44,6 +44,8 @@
                  class="poster"
                  data-i18n-alt="home.posterAlt"
                  alt="Poster"
+                 loading="lazy"
+                 decoding="async"
                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
 
             <div th:if="${m.posterUrl != null and !#strings.isEmpty(m.posterUrl)}"
@@ -56,7 +58,7 @@
                 No poster
             </div>
 
-            <p th:text="${m.title}">Movie Title</p>
+            <p th:text="${lvTitleByMovieId != null and lvTitleByMovieId.containsKey(mid) ? lvTitleByMovieId.get(mid) : m.title}">Movie Title</p>
         </a>
 
         <div sec:authorize="isAuthenticated()">
@@ -92,6 +94,8 @@
         <img th:if="${genrePreview[g.genreId] != null and genrePreview[g.genreId].posterUrl != null and !#strings.isEmpty(genrePreview[g.genreId].posterUrl)}"
              th:src="${genrePreview[g.genreId].posterUrl}"
              class="genre-image"
+             loading="lazy"
+             decoding="async"
              onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
 
         <div th:if="${genrePreview[g.genreId] != null and genrePreview[g.genreId].posterUrl != null and !#strings.isEmpty(genrePreview[g.genreId].posterUrl)}"
