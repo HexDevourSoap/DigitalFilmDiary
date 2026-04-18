@@ -149,7 +149,7 @@ public class RecommendationServiceImpl implements IRecommendationService {
                 }
             }
 
-            // Keep only movies with at least one genre match.
+            
             if (score <= 0) {
                 continue;
             }
@@ -251,7 +251,7 @@ public class RecommendationServiceImpl implements IRecommendationService {
         double imdb = movie.getImdbRating() != null ? movie.getImdbRating().doubleValue() : 0.0;
         int year = movie.getReleaseYear() != null ? movie.getReleaseYear() : 1900;
 
-        // Favor newer movies while still considering IMDb as a popularity proxy.
+        
         double recencyBonus;
         if (year >= 2023) {
             recencyBonus = 3.0;

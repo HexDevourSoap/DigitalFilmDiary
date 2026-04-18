@@ -833,7 +833,7 @@ public class FidiApplication {
                 try {
                     searchResults = omdbClient.searchByTitle(query);
                 } catch (Exception ex) {
-                    // If OMDb limits are reached, skip top-up for this genre.
+                    
                     break;
                 }
                 for (var item : searchResults) {
@@ -857,7 +857,7 @@ public class FidiApplication {
                         getOrUpdateMovieFromOmdb(movieRepo, omdbClient, item.getImdbID(), Arrays.asList(genre));
                         count = movieRepo.findByGenresGenreId(genre.getGenreId(), PageRequest.of(0, 1)).getTotalElements();
                     } catch (Exception ignored) {
-                        // Continue trying other candidates
+                        
                     }
                 }
             }
