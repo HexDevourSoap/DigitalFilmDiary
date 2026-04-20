@@ -34,6 +34,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     function updateButtonTextPlain(button, isDark) {
-        button.textContent = isDark ? "☀ Light mode" : "🌙 Dark mode";
+        button.setAttribute("aria-pressed", isDark ? "true" : "false");
+        button.setAttribute("aria-label", isDark ? "Light mode" : "Dark mode");
+        button.setAttribute("title", isDark ? "Light mode" : "Dark mode");
     }
 });

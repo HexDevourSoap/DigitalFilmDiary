@@ -9,10 +9,14 @@
     <script th:inline="javascript">
         window.__APP_ROOT__ = /*[[@{/}]]*/ "/";
     </script>
-    <script th:src="@{/i18n-boot.js(v=20260418)}" defer></script>
+    <script th:src="@{/i18n-boot.js(v=20260419)}" defer></script>
 </th:block>
 
 <header th:fragment="siteHeader" class="site-header hud-shell">
+    <a class="site-brand" th:href="@{|${langPrefix}/|}">
+        <span class="site-brand__badge" aria-hidden="true">F</span>
+        <span class="site-brand__name" data-i18n="app.title">Movie Diary</span>
+    </a>
     <nav class="site-nav" aria-label="Primary navigation">
         <div class="nav-cluster">
             <a class="nav-btn" th:href="@{|${langPrefix}/|}" data-i18n="nav.home">Home</a>
@@ -44,7 +48,12 @@
             <a th:href="${langUrlLv}" class="lang-link" th:classappend="${appLang == 'lv'} ? 'is-active'">LV</a>
             <a th:href="${langUrlEn}" class="lang-link" th:classappend="${appLang == 'en'} ? 'is-active'">EN</a>
         </div>
-        <button id="theme-toggle" class="theme-button hud-theme-btn" type="button">🌙 Dark mode</button>
+        <button id="theme-toggle" class="theme-button hud-theme-btn theme-toggle-btn" type="button"
+                aria-pressed="false"
+                title="Dark mode">
+            <span class="theme-toggle__moon" aria-hidden="true">🌙</span>
+            <span class="theme-toggle__sun" aria-hidden="true">☀️</span>
+        </button>
     </div>
 </header>
 

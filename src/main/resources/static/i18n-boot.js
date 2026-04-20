@@ -52,7 +52,11 @@
             return;
         }
         var isDark = document.body.classList.contains("dark-mode");
-        btn.textContent = isDark ? i18next.t("theme.light") : i18next.t("theme.dark");
+        var goLight = i18next.t("theme.light");
+        var goDark = i18next.t("theme.dark");
+        btn.setAttribute("aria-pressed", isDark ? "true" : "false");
+        btn.setAttribute("aria-label", isDark ? goLight : goDark);
+        btn.setAttribute("title", isDark ? goLight : goDark);
     }
 
     window.refreshI18nThemeButton = refreshThemeButton;
