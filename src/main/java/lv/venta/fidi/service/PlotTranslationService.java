@@ -71,9 +71,7 @@ public class PlotTranslationService {
         return t;
     }
 
-    /**
-     * Removes {@code %} that is not the start of a valid {@code %XX} hex escape (broken MyMemory output).
-     */
+    
     private static String stripOrphanPercentSigns(String s) {
         if (s == null || s.isEmpty()) {
             return s;
@@ -104,10 +102,7 @@ public class PlotTranslationService {
     private final RestClient restClient = RestClient.create();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    /**
-     * Translates English plot text to Latvian using the public MyMemory API.
-     * Returns the original string if translation fails or input is blank.
-     */
+    
     public String translateEnToLv(String text) {
         if (text == null || text.isBlank()) {
             return text;
@@ -136,9 +131,7 @@ public class PlotTranslationService {
         }
     }
 
-    /**
-     * Translates short labels (title, genre names) in order. Small delay between calls to reduce API throttling.
-     */
+    
     public List<String> translateListEnToLv(List<String> inputs) {
         if (inputs == null || inputs.isEmpty()) {
             return List.of();
@@ -168,9 +161,7 @@ public class PlotTranslationService {
         return out;
     }
 
-    /**
-     * Single label (genre, short title): known genres use dictionary; otherwise one MT call (no chunking).
-     */
+    
     public String translateShortEnToLv(String text) {
         if (text == null || text.isBlank()) {
             return text;
@@ -209,9 +200,7 @@ public class PlotTranslationService {
         return GENRE_EN_TO_LV.get(englishName.trim().toLowerCase(Locale.ROOT));
     }
 
-    /**
-     * MyMemory often returns punctuation as percent-encoding, sometimes broken ({@code % 22}, {@code % 2C}).
-     */
+    
     private static String normalizeTranslationOutput(String s) {
         if (s == null || s.isBlank()) {
             return s;
@@ -239,7 +228,7 @@ public class PlotTranslationService {
         return r;
     }
 
-    /** Collapses {@code % 22} → {@code %22} etc. produced by broken MT output. */
+    
     private static String collapseBrokenPercentEscapes(String s) {
         String t = s;
         for (int j = 0; j < 8; j++) {
@@ -252,10 +241,7 @@ public class PlotTranslationService {
         return t;
     }
 
-    /**
-     * MyMemory sometimes drops the leading {@code %} so a comma becomes the literal letters {@code 2C}
-     * (hex for comma in {@code %2C}).
-     */
+    
     private static String fixBareTwoCCommaArtifacts(String s) {
         if (s == null || !s.contains("2C")) {
             return s;
