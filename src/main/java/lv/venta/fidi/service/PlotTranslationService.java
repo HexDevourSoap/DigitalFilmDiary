@@ -19,14 +19,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 public class PlotTranslationService {
 
-    /** In-memory cache for short EN→LV strings (movie titles, etc.) to avoid repeated MyMemory calls. */
+    
     private static final int TITLE_CACHE_CAP = 6_000;
     private final ConcurrentHashMap<String, String> shortEnToLvCache = new ConcurrentHashMap<>();
 
     private static final int MAX_INPUT = 12_000;
     private static final int CHUNK = 420;
 
-    /** OMDb / English genre names → Latvian (used when MT is wrong or leaves English). */
+    
     private static final Map<String, String> GENRE_EN_TO_LV = new HashMap<>();
 
     static {
@@ -54,9 +54,7 @@ public class PlotTranslationService {
         GENRE_EN_TO_LV.put("western", "Vesterns");
     }
 
-    /**
-     * English phrases often left untranslated or mangled by MT in plot summaries → Latvian fixes.
-     */
+    
     private static String applyPlotPhraseFixesLv(String s) {
         if (s == null || s.isBlank()) {
             return s;
@@ -115,15 +113,23 @@ public class PlotTranslationService {
         try {
             List<String> chunks = chunk(trimmed, CHUNK);
             StringBuilder out = new StringBuilder();
+            int translatedCount = 0;
             for (String chunk : chunks) {
-                String part = callMyMemory(chunk);
+                String part = callMyMemoryWithRetries(chunk);
+                String piece;
                 if (part == null || part.isBlank()) {
-                    return text;
+                    piece = chunk;
+                } else {
+                    piece = normalizeTranslationOutput(part).trim();
+                    translatedCount++;
                 }
                 if (out.length() > 0) {
                     out.append(' ');
                 }
-                out.append(normalizeTranslationOutput(part).trim());
+                out.append(piece);
+            }
+            if (translatedCount == 0) {
+                return text;
             }
             return normalizeTranslationOutput(out.toString());
         } catch (Exception e) {
@@ -212,7 +218,7 @@ public class PlotTranslationService {
             try {
                 next = URLDecoder.decode(next.replace('+', ' '), StandardCharsets.UTF_8);
             } catch (IllegalArgumentException e) {
-                // malformed % sequence; try literal pass only
+                
             }
             if (next.equals(cur)) {
                 break;
@@ -326,5 +332,24 @@ public class PlotTranslationService {
             return null;
         }
         return normalizeTranslationOutput(translated);
+    }
+
+    private String callMyMemoryWithRetries(String chunk) throws Exception {
+        String out = null;
+        for (int attempt = 0; attempt < 3; attempt++) {
+            if (attempt > 0) {
+                try {
+                    Thread.sleep(120L * attempt);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+            out = callMyMemory(chunk);
+            if (out != null && !out.isBlank()) {
+                return out;
+            }
+        }
+        return out;
     }
 }

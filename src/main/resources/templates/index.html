@@ -106,7 +106,7 @@
              class="genre-fallback"></div>
 
         <div class="genre-title">
-            <span th:text="${g.name}">Genre</span>
+            <span th:text="${genreDisplayNames != null ? genreDisplayNames[g.genreId] : g.name}">Genre</span>
         </div>
 
     </a>

@@ -4,9 +4,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * Curated Latvian cinema / DVD titles by IMDb id. Used before machine translation so UI shows proper names.
- */
+
 public final class KnownMovieTitlesLv {
 
     private static final Map<String, String> BY_IMDB = new HashMap<>();
@@ -18,15 +16,14 @@ public final class KnownMovieTitlesLv {
         p("tt0109830", "Forrests Gamps");
         p("tt0137523", "Kaujas klubs");
         p("tt0133093", "Matrica");
-        p("tt1375666", "Sāksme");
+        p("tt1375666", "Pirmsākums");
         p("tt0816692", "Starpzvaigžņu");
-        p("tt0110912", "Krāpīgs stāsts");
+        p("tt0110912", "Lubene");
         p("tt0108052", "Šindlera saraksts");
         p("tt0050083", "12 dusmīgi vīri");
         p("tt0167260", "Gredzenu pavēlnieks: Atgriešanās karalis");
         p("tt0120737", "Gredzenu pavēlnieks: Gredzenu brālība");
         p("tt0167261", "Gredzenu pavēlnieks: Divi torņi");
-        p("tt0167263", "Gredzenu pavēlnieks: Atgriešanās karalis");
         p("tt0060196", "Labs, slikts, ļauns");
         p("tt0903747", "Pārkāpt robežu");
         p("tt0126029", "Šreks");
@@ -35,19 +32,21 @@ public final class KnownMovieTitlesLv {
         p("tt0892791", "Šreks: ilgi un laimīgi");
         p("tt1392190", "Mad Makss: dusmu ceļš");
         p("tt7286456", "Džokers");
-        p("tt1853728", "Django atbrīvotais");
+        p("tt1853728", "Atsvabinātais Džango");
         p("tt4154756", "Atriebēji: Bezgalības karš");
         p("tt4154796", "Atriebēji: Noslēgums");
         p("tt2380307", "Koko");
-        p("tt0472033", "Trons: Mantojums");
-        p("tt1630029", "Ratatuj");
-        p("tt1825683", "Duna");
-        p("tt1099212", "Galaktikas sargi");
+        p("tt0472033", "9");
+        p("tt1630029", "Avatars: Ūdens ceļš");
+        p("tt0382932", "Ratatuj");
+        p("tt1825683", "Melnā Pantera");
+        p("tt1099212", "Krēsla");
         p("tt0482571", "Zaļā jūdze");
         p("tt0114369", "Septiņi");
         p("tt0102926", "Jēru klusēšana");
         p("tt0172495", "Gladiators");
-        p("tt0120815", "Lietus vīrs");
+        p("tt0120815", "Glābjot ierindnieku Raienu");
+        p("tt0095956", "Lietus vīrs");
         p("tt2582802", "Īstā detektīva 1. sezona");
         p("tt0118799", "Amēlija no Montmartra");
         p("tt0110357", "Karalis Lauva");
@@ -61,15 +60,17 @@ public final class KnownMovieTitlesLv {
         p("tt1345836", "Tumsas bruņinieka atdzimšana");
         p("tt1130884", "Šatera sala");
         p("tt0086250", "Asinis uz asfalta");
-        p("tt1832382", "Nakts mednieks");
+        p("tt1832382", "Šķiršanās");
         p("tt0361748", "Nežēlīgie");
-        p("tt10872600", "Spēlētājs Nr. 1");
+        p("tt10872600", "Zirnekļcilvēks: Nav ceļa uz mājām");
+        p("tt1677720", "Spēlētājs Nr. 1");
         p("tt0076759", "Zvaigžņu kari");
         p("tt6751668", "Parazīts");
         p("tt0103064", "Terminatoris 2: sprieduma diena");
-        p("tt5074352", "Stīvs Džobss");
+        p("tt5074352", "Dangal");
         p("tt7131622", "Zaļā grāmata");
-        p("tt0112573", "Brīnišķīgais smadzenēs");
+        p("tt0112573", "Bez sirds");
+        p("tt0266549", "Skaitļu valdzinājums");
         p("tt0093058", "Bezdibenis");
         p("tt0110413", "Leon");
         p("tt0993846", "Volstrītas vilks");
@@ -80,12 +81,11 @@ public final class KnownMovieTitlesLv {
         p("tt5027774", "Trīs bilbordi uz robežas Ebingas, Misūri");
         p("tt1160419", "Duna: Otrā daļa");
         p("tt4154664", "Kapteinis Marvela");
-        p("tt9362722", "Īss stāsts par garo mūžu");
+        p("tt9362722", "Zirnekļcilvēks: Pāri Zirnekļpasaulei");
         p("tt0118715", "Lielais Lebovskis");
         p("tt2278388", "Grand Budapestas viesnīca");
         p("tt0454921", "Harijs Poters un Filozofu akmens");
         p("tt1201607", "Harijs Poters un Noslēpumu kambaris");
-        p("tt10272386", "Harijs Poters un Azkabanas gūsteknis");
         p("tt1187043", "500 dienu ar Samantu");
         p("tt0064116", "Par dolāru pāris asaru");
         p("tt0105695", "Nežēlīgā četruņa");
@@ -128,11 +128,12 @@ public final class KnownMovieTitlesLv {
         p("tt2119532", "Heksova grēda");
         p("tt0078788", "Apokalipse šodien");
         p("tt1856101", "Blade Runner 2049");
-        p("tt0083658", "Blade Runner");
+        p("tt0083658", "Asmen skrējējs");
         p("tt1371111", "Rītdiena atnāk pilnā sparā");
         p("tt3498820", "Kapteinis Amerika: Pilsoņu karš");
         p("tt3896198", "Galaktikas sargi 2");
         p("tt3521164", "Vaiana");
+        p("tt1217209", "Drošsirde");
         p("tt2948356", "Zootropole");
         p("tt0844471", "Mākoņains ar iespēju uz gaļas bumbām lietu");
         p("tt0095327", "Kapu pļāvējs");
@@ -170,7 +171,8 @@ public final class KnownMovieTitlesLv {
         p("tt2106476", "Medības");
         p("tt0090605", "Svešinieki");
         p("tt0119488", "L.A. konfidenciāli");
-        p("tt1517268", "Alise Brīnumzemē");
+        p("tt1517268", "Barbie");
+        p("tt1014759", "Alise Brīnumzemē");
     }
 
     private static void p(String imdbId, String titleLv) {

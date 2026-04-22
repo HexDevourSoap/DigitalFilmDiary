@@ -15,6 +15,7 @@ import lv.venta.fidi.config.RequestLang;
 import lv.venta.fidi.model.Genre;
 import lv.venta.fidi.model.Movie;
 import lv.venta.fidi.repo.IGenreRepo;
+import lv.venta.fidi.service.GenreLabelUiService;
 import lv.venta.fidi.service.IMovieService;
 import lv.venta.fidi.service.MovieTitleUiService;
 
@@ -29,6 +30,9 @@ public class HomeController {
 
     @Autowired
     private MovieTitleUiService movieTitleUiService;
+
+    @Autowired
+    private GenreLabelUiService genreLabelUiService;
 
     @GetMapping("/")
     public String home(Model model, HttpServletRequest request) {
@@ -53,6 +57,7 @@ public class HomeController {
             model.addAttribute("lvTitleByImdbId", Collections.emptyMap());
             model.addAttribute("genres", genres);
             model.addAttribute("genrePreview", genrePreview);
+            model.addAttribute("genreDisplayNames", genreLabelUiService.mapDisplayNamesByGenreId(appLang, genres));
 
             return "index";
         } catch (Exception e) {

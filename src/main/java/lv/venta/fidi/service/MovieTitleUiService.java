@@ -3,7 +3,6 @@ package lv.venta.fidi.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,35 +35,17 @@ public class MovieTitleUiService {
             return Collections.emptyMap();
         }
         Map<String, String> out = new HashMap<>();
-        List<Movie> needMachineTranslation = new ArrayList<>();
         for (Movie m : movies) {
             if (m == null) {
                 continue;
             }
-            String known = KnownMovieTitlesLv.titleOrNull(m.getImdbId());
-            if (known != null) {
-                out.put(String.valueOf(m.getMovieId()), known);
-            } else {
-                needMachineTranslation.add(m);
-            }
-        }
-        if (needMachineTranslation.isEmpty()) {
-            return out;
-        }
-        LinkedHashMap<String, Long> firstMovieIdByTitle = new LinkedHashMap<>();
-        for (Movie m : needMachineTranslation) {
             String t = m.getTitle();
             if (t == null || t.isBlank()) {
                 continue;
             }
-            firstMovieIdByTitle.putIfAbsent(t.trim(), m.getMovieId());
-        }
-        List<String> uniqueTitles = new ArrayList<>(firstMovieIdByTitle.keySet());
-        List<String> translated = plotTranslationService.translateListEnToLv(uniqueTitles);
-        for (int i = 0; i < uniqueTitles.size() && i < translated.size(); i++) {
-            Long id = firstMovieIdByTitle.get(uniqueTitles.get(i));
-            if (id != null) {
-                out.put(String.valueOf(id), translated.get(i));
+            String resolved = resolveTitleApiFirst(t.trim(), m.getImdbId());
+            if (resolved != null && !resolved.isBlank()) {
+                out.put(String.valueOf(m.getMovieId()), resolved);
             }
         }
         return out;
@@ -75,33 +56,7 @@ public class MovieTitleUiService {
             return Collections.emptyMap();
         }
         Map<String, String> out = new HashMap<>();
-        List<OmdbSearchItemDto> needMt = new ArrayList<>();
         for (OmdbSearchItemDto item : items) {
-            if (item == null) {
-                continue;
-            }
-            String imdb = item.getImdbID();
-            String known = KnownMovieTitlesLv.titleOrNull(imdb);
-            if (known != null && imdb != null && !imdb.isBlank()) {
-                out.put(imdb, known);
-            } else {
-                needMt.add(item);
-            }
-        }
-        LinkedHashMap<String, String> uniqueTitlesInOrder = new LinkedHashMap<>();
-        for (OmdbSearchItemDto item : needMt) {
-            String t = item.getTitle();
-            if (t != null && !t.isBlank()) {
-                uniqueTitlesInOrder.putIfAbsent(t.trim(), t.trim());
-            }
-        }
-        List<String> uniqueList = new ArrayList<>(uniqueTitlesInOrder.keySet());
-        List<String> translated = plotTranslationService.translateListEnToLv(uniqueList);
-        Map<String, String> titleToLv = new HashMap<>();
-        for (int i = 0; i < uniqueList.size() && i < translated.size(); i++) {
-            titleToLv.put(uniqueList.get(i), translated.get(i));
-        }
-        for (OmdbSearchItemDto item : needMt) {
             if (item == null) {
                 continue;
             }
@@ -110,12 +65,9 @@ public class MovieTitleUiService {
             if (imdb == null || imdb.isBlank() || t == null || t.isBlank()) {
                 continue;
             }
-            if (out.containsKey(imdb)) {
-                continue;
-            }
-            String lv = titleToLv.get(t.trim());
-            if (lv != null) {
-                out.put(imdb, lv);
+            String resolved = resolveTitleApiFirst(t.trim(), imdb);
+            if (resolved != null && !resolved.isBlank()) {
+                out.put(imdb, resolved);
             }
         }
         return out;
@@ -133,26 +85,48 @@ public class MovieTitleUiService {
         if (!wantLatvianTitles(appLang)) {
             return t;
         }
-        String known = KnownMovieTitlesLv.titleOrNull(imdbId);
-        if (known != null) {
-            return known;
-        }
-        return plotTranslationService.translateShortEnToLv(t);
+        return resolveTitleApiFirst(t, imdbId);
     }
 
     public void localizeOmdbTitle(String appLang, OmdbMovieDto dto) {
         if (dto == null || !wantLatvianTitles(appLang)) {
             return;
         }
-        String known = KnownMovieTitlesLv.titleOrNull(dto.getImdbID());
-        if (known != null) {
-            dto.setTitle(known);
-            return;
-        }
         String t = dto.getTitle();
         if (t == null || t.isBlank()) {
             return;
         }
-        dto.setTitle(plotTranslationService.translateShortEnToLv(t.trim()));
+        dto.setTitle(resolveTitleApiFirst(t.trim(), dto.getImdbID()));
+    }
+
+    /**
+     * API first, then curated fallback when API clearly failed or kept original.
+     */
+    private String resolveTitleApiFirst(String englishTitle, String imdbId) {
+        if (englishTitle == null || englishTitle.isBlank()) {
+            return englishTitle;
+        }
+        String source = englishTitle.trim();
+        String api = plotTranslationService.translateShortEnToLv(source);
+        if (api == null || api.isBlank()) {
+            String known = KnownMovieTitlesLv.titleOrNull(imdbId);
+            return known != null ? known : source;
+        }
+        String normalizedApi = api.trim();
+        if (normalizedApi.equalsIgnoreCase(source) || looksApiErrorText(normalizedApi)) {
+            String known = KnownMovieTitlesLv.titleOrNull(imdbId);
+            return known != null ? known : source;
+        }
+        return normalizedApi;
+    }
+
+    private static boolean looksApiErrorText(String value) {
+        String s = value.toLowerCase();
+        return s.contains("invalid email provided")
+                || s.contains("mymemory warning")
+                || s.contains("query length limit")
+                || s.equals("?")
+                || s.equals("??")
+                || s.equals("???");
     }
 }
