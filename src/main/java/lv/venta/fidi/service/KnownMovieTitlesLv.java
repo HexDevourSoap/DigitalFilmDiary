@@ -17,7 +17,7 @@ public final class KnownMovieTitlesLv {
         p("tt0137523", "Kaujas klubs");
         p("tt0133093", "Matrica");
         p("tt1375666", "Pirmsākums");
-        p("tt0816692", "Starpzvaigžņu");
+        p("tt0816692", "Starp zvaigznēm");
         p("tt0110912", "Lubene");
         p("tt0108052", "Šindlera saraksts");
         p("tt0050083", "12 dusmīgi vīri");
@@ -30,7 +30,7 @@ public final class KnownMovieTitlesLv {
         p("tt0298148", "Šreks 2");
         p("tt0413267", "Šreks Trešais");
         p("tt0892791", "Šreks: ilgi un laimīgi");
-        p("tt1392190", "Mad Makss: dusmu ceļš");
+        p("tt1392190", "Trakais Makss: Skarbais ceļš");
         p("tt7286456", "Džokers");
         p("tt1853728", "Atsvabinātais Džango");
         p("tt4154756", "Atriebēji: Bezgalības karš");
@@ -171,8 +171,9 @@ public final class KnownMovieTitlesLv {
         p("tt2106476", "Medības");
         p("tt0090605", "Svešinieki");
         p("tt0119488", "L.A. konfidenciāli");
-        p("tt1517268", "Barbie");
+        p("tt1517268", "Bārbija");
         p("tt1014759", "Alise Brīnumzemē");
+        p("tt0418279", "Transformeri");
     }
 
     private static void p(String imdbId, String titleLv) {

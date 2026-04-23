@@ -99,9 +99,7 @@ public class MovieTitleUiService {
         dto.setTitle(resolveTitleApiFirst(t.trim(), dto.getImdbID()));
     }
 
-    /**
-     * Curated title first for known IMDb IDs, API translation only for unknown titles.
-     */
+    
     private String resolveTitleApiFirst(String englishTitle, String imdbId) {
         if (englishTitle == null || englishTitle.isBlank()) {
             return englishTitle;
