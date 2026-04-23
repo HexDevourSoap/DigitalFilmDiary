@@ -72,11 +72,7 @@
 
         <div th:if="${movie.description != null and !#strings.isEmpty(movie.description)}">
             <h2 class="section-title movie-plot-heading" style="margin-top: 16px;" data-i18n="movie.plot">Plot</h2>
-            <p id="movie-plot-text" th:text="${movie.description}">Description</p>
-            <script th:inline="javascript">
-                window.__MOVIE_PLOT_LANG__ = /*[[${appLang}]]*/ 'lv';
-                window.__MOVIE_PLOT_EN__ = /*[[${movie.description}]]*/ '';
-            </script>
+            <p id="movie-plot-text" th:text="${moviePlotText != null ? moviePlotText : movie.description}">Description</p>
         </div>
 
         <div class="movie-details-actions">

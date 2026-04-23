@@ -19,6 +19,7 @@ import lv.venta.fidi.repo.IGenreRepo;
 import lv.venta.fidi.repo.IMovieRepo;
 import lv.venta.fidi.service.IMovieService;
 import lv.venta.fidi.service.OmdbClient;
+import lv.venta.fidi.service.PlotTranslationService;
 
 @Service
 public class MovieServiceImpl implements IMovieService {
@@ -31,6 +32,9 @@ public class MovieServiceImpl implements IMovieService {
 
     @Autowired
     private OmdbClient omdbClient;
+
+    @Autowired
+    private PlotTranslationService plotTranslationService;
 
     private static final Set<String> STOP_WORDS = Set.of("the", "a", "an", "of");
 
@@ -186,6 +190,37 @@ public class MovieServiceImpl implements IMovieService {
         }
 
         return result;
+    }
+
+    @Override
+    public String resolveDisplayPlot(Movie movie, String appLang) throws Exception {
+        if (movie == null) {
+            return "";
+        }
+
+        String english = movie.getDescription();
+        if (english == null || english.isBlank()) {
+            return english;
+        }
+
+        boolean englishUi = appLang != null && "en".equalsIgnoreCase(appLang.trim());
+        if (englishUi) {
+            return english;
+        }
+
+        String cachedLv = movie.getDescriptionLv();
+        if (cachedLv != null && !cachedLv.isBlank()) {
+            return cachedLv;
+        }
+
+        String translated = plotTranslationService.translateEnToLv(english);
+        if (translated == null || translated.isBlank()) {
+            return english;
+        }
+
+        movie.setDescriptionLv(translated);
+        movieRepo.save(movie);
+        return translated;
     }
 
     private String normalize(String text) {

@@ -58,6 +58,7 @@ public class MovieController {
             model.addAttribute("movie", movie);
             model.addAttribute("movieDisplayTitle",
                     movieTitleUiService.displayMovieTitle(appLang, movie.getImdbId(), movie.getTitle()));
+            model.addAttribute("moviePlotText", movieService.resolveDisplayPlot(movie, appLang));
             return "movie-details";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
@@ -73,6 +74,7 @@ public class MovieController {
             model.addAttribute("movie", movie);
             model.addAttribute("movieDisplayTitle",
                     movieTitleUiService.displayMovieTitle(appLang, movie.getImdbId(), movie.getTitle()));
+            model.addAttribute("moviePlotText", movieService.resolveDisplayPlot(movie, appLang));
             return "movie-details";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());

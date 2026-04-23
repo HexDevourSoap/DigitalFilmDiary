@@ -59,6 +59,9 @@ public class Movie {
     @Column(name = "Description", columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "DescriptionLv", columnDefinition = "TEXT")
+    private String descriptionLv;
+
     @ManyToMany
     @JoinTable(
         name = "MovieGenresTable",

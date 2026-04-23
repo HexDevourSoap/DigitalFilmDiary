@@ -15,4 +15,6 @@ public interface IMovieService {
     public abstract Movie getOrCreateByImdbId(String imdbId) throws Exception;
 
     public abstract List<Movie> searchLocalMoviesFuzzy(String query) throws Exception;
+
+    public abstract String resolveDisplayPlot(Movie movie, String appLang) throws Exception;
 }

@@ -100,22 +100,24 @@ public class MovieTitleUiService {
     }
 
     /**
-     * API first, then curated fallback when API clearly failed or kept original.
+     * Curated title first for known IMDb IDs, API translation only for unknown titles.
      */
     private String resolveTitleApiFirst(String englishTitle, String imdbId) {
         if (englishTitle == null || englishTitle.isBlank()) {
             return englishTitle;
         }
         String source = englishTitle.trim();
+        String known = KnownMovieTitlesLv.titleOrNull(imdbId);
+        if (known != null && !known.isBlank()) {
+            return known;
+        }
         String api = plotTranslationService.translateShortEnToLv(source);
         if (api == null || api.isBlank()) {
-            String known = KnownMovieTitlesLv.titleOrNull(imdbId);
-            return known != null ? known : source;
+            return source;
         }
         String normalizedApi = api.trim();
         if (normalizedApi.equalsIgnoreCase(source) || looksApiErrorText(normalizedApi)) {
-            String known = KnownMovieTitlesLv.titleOrNull(imdbId);
-            return known != null ? known : source;
+            return source;
         }
         return normalizedApi;
     }
