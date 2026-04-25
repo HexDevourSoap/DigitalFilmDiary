@@ -14,7 +14,7 @@
 
 <header th:fragment="siteHeader" class="site-header hud-shell">
     <a class="site-brand" th:href="@{|${langPrefix}/|}">
-        <span class="site-brand__badge" aria-hidden="true">F</span>
+        <span class="site-brand__badge" aria-hidden="true">D</span>
         <span class="site-brand__name" data-i18n="app.title">Movie Diary</span>
     </a>
     <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="primary-nav">
@@ -29,6 +29,15 @@
             <a class="nav-btn" th:href="@{|${langPrefix}/diary|}" data-i18n="nav.diary">My diary</a>
             <a class="nav-btn" th:href="@{|${langPrefix}/recommendations|}" data-i18n="nav.recommendations">Recommendations</a>
         </div>
+        <form th:action="@{|${langPrefix}/movies/search|}" method="get" class="header-search-form">
+            <input type="text"
+                   name="query"
+                   class="header-search-input"
+                   data-i18n-placeholder="search.placeholder"
+                   placeholder="Search movies..."
+                   th:value="${param.query != null and !#lists.isEmpty(param.query) ? param.query[0] : ''}">
+            <button type="submit" class="header-search-button" data-i18n="search.submit">Search</button>
+        </form>
 
         <div class="nav-cluster nav-cluster--user">
             <span sec:authorize="isAnonymous()">
@@ -36,15 +45,21 @@
                 <a class="nav-btn nav-btn--accent" th:href="@{|${langPrefix}/login|}" data-i18n="nav.login">Login</a>
             </span>
 
-            <span sec:authorize="isAuthenticated()" class="nav-user-block">
-                <span class="nav-user-chip">
-                    <span class="nav-user-label" data-i18n="nav.loggedInAs">Logged in as:</span>
-                    <b class="nav-user-name" sec:authentication="name">user</b>
-                </span>
-                <form th:action="@{/logout}" method="post" class="inline-form nav-logout-form">
-                    <button type="submit" class="nav-btn nav-btn--ghost logout-button" data-i18n="nav.logout">Logout</button>
-                </form>
-            </span>
+            <div sec:authorize="isAuthenticated()" class="nav-user-block nav-profile">
+                <button type="button" class="nav-profile-trigger" aria-expanded="false" aria-label="Open profile menu">
+                    <span class="nav-profile-avatar" aria-hidden="true"></span>
+                    <span class="nav-profile-caret" aria-hidden="true"></span>
+                </button>
+                <div class="nav-profile-menu" role="menu" aria-label="Profile menu">
+                    <div class="nav-profile-menu__header">
+                        <span class="nav-user-label" data-i18n="nav.loggedInAs">Logged in as:</span>
+                        <b class="nav-user-name" sec:authentication="name">user</b>
+                    </div>
+                    <form th:action="@{/logout}" method="post" class="nav-profile-menu__form">
+                        <button type="submit" class="nav-profile-menu__logout" data-i18n="nav.logout">Logout</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -70,6 +85,8 @@
                 header.dataset.menuInit = "true";
 
                 const toggleButton = header.querySelector(".nav-toggle");
+                const profileBlock = header.querySelector(".nav-profile");
+                const profileTrigger = header.querySelector(".nav-profile-trigger");
                 if (!toggleButton) {
                     return;
                 }
@@ -83,6 +100,31 @@
                     const isOpen = header.classList.toggle("menu-open");
                     toggleButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
                 });
+
+                if (profileBlock && profileTrigger) {
+                    function closeProfileMenu() {
+                        profileBlock.classList.remove("is-open");
+                        profileTrigger.setAttribute("aria-expanded", "false");
+                    }
+
+                    profileTrigger.addEventListener("click", function (event) {
+                        event.stopPropagation();
+                        const open = profileBlock.classList.toggle("is-open");
+                        profileTrigger.setAttribute("aria-expanded", open ? "true" : "false");
+                    });
+
+                    document.addEventListener("click", function (event) {
+                        if (!profileBlock.contains(event.target)) {
+                            closeProfileMenu();
+                        }
+                    });
+
+                    document.addEventListener("keydown", function (event) {
+                        if (event.key === "Escape") {
+                            closeProfileMenu();
+                        }
+                    });
+                }
 
                 header.querySelectorAll(".site-nav a, .site-nav button[type='submit'], .hud-bar-actions a, .hud-bar-actions button").forEach(function (interactiveItem) {
                     interactiveItem.addEventListener("click", function () {

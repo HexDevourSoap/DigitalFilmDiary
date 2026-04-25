@@ -16,13 +16,6 @@
 
 <hr>
 
-<form th:action="@{|${langPrefix}/movies/search|}" method="get" class="search-form">
-    <input type="text" name="query" data-i18n-placeholder="search.placeholder" placeholder="Search movies..." th:value="${searchQuery}" class="search-input">
-    <button type="submit" class="search-button" data-i18n="search.submit">Search</button>
-</form>
-
-<hr>
-
 <div th:if="${searchResults != null}">
     <h2 class="section-title" data-i18n="browse.searchResults">Search Results</h2>
 
