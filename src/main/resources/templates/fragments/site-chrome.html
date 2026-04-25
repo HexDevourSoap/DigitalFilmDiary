@@ -17,7 +17,12 @@
         <span class="site-brand__badge" aria-hidden="true">F</span>
         <span class="site-brand__name" data-i18n="app.title">Movie Diary</span>
     </a>
-    <nav class="site-nav" aria-label="Primary navigation">
+    <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="primary-nav">
+        <span class="nav-toggle__line" aria-hidden="true"></span>
+        <span class="nav-toggle__line" aria-hidden="true"></span>
+        <span class="nav-toggle__line" aria-hidden="true"></span>
+    </button>
+    <nav class="site-nav" id="primary-nav" aria-label="Primary navigation">
         <div class="nav-cluster">
             <a class="nav-btn" th:href="@{|${langPrefix}/|}" data-i18n="nav.home">Home</a>
             <a class="nav-btn" th:href="@{|${langPrefix}/movies|}" data-i18n="nav.movies">Browse movies</a>
@@ -55,6 +60,46 @@
             <span class="theme-toggle__sun" aria-hidden="true">☀️</span>
         </button>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const mobileWidth = 768;
+            document.querySelectorAll(".site-header").forEach(function (header) {
+                if (header.dataset.menuInit === "true") {
+                    return;
+                }
+                header.dataset.menuInit = "true";
+
+                const toggleButton = header.querySelector(".nav-toggle");
+                if (!toggleButton) {
+                    return;
+                }
+
+                function closeMenu() {
+                    header.classList.remove("menu-open");
+                    toggleButton.setAttribute("aria-expanded", "false");
+                }
+
+                toggleButton.addEventListener("click", function () {
+                    const isOpen = header.classList.toggle("menu-open");
+                    toggleButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
+                });
+
+                header.querySelectorAll(".site-nav a, .site-nav button[type='submit'], .hud-bar-actions a, .hud-bar-actions button").forEach(function (interactiveItem) {
+                    interactiveItem.addEventListener("click", function () {
+                        if (window.innerWidth <= mobileWidth) {
+                            closeMenu();
+                        }
+                    });
+                });
+
+                window.addEventListener("resize", function () {
+                    if (window.innerWidth > mobileWidth) {
+                        closeMenu();
+                    }
+                });
+            });
+        });
+    </script>
 </header>
 
 </body>
