@@ -38,6 +38,10 @@ public class RecommendationController {
                                       Principal principal,
                                       HttpServletRequest request,
                                       @RequestParam(name = "refresh", defaultValue = "false") boolean refresh) {
+        if (principal == null) {
+            model.addAttribute("loginRequired", true);
+            return "show-error-page";
+        }
         try {
             AppUser user = appUserRepo.findByEmail(principal.getName())
                     .orElseThrow(() -> new Exception("User was not found"));

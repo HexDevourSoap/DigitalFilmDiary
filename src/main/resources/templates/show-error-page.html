@@ -17,10 +17,12 @@
 <hr>
 
 <div class="details-container">
-    <p th:text="${error}">Error message goes here</p>
+    <p th:if="${loginRequired}" data-i18n="errorPage.loginRequired">You need to log in to view this page.</p>
+    <p th:unless="${loginRequired}" th:text="${error}">Error message goes here</p>
 </div>
 
 <div class="back-links">
+    <a th:if="${loginRequired}" th:href="@{|${langPrefix}/login|}" data-i18n="nav.login">Log in</a>
     <a th:href="@{|${langPrefix}/|}" data-i18n="errorPage.home">Go home</a>
 </div>
 

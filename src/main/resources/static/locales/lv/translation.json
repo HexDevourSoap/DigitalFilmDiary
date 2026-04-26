@@ -136,6 +136,7 @@
   },
   "errorPage": {
     "title": "Kaut kas nogāja greizi",
-    "home": "Uz sākumu"
+    "home": "Uz sākumu",
+    "loginRequired": "Lai skatītu šo lapu, jāpieslēdzas."
   }
 }

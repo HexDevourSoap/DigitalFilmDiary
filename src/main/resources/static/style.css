@@ -81,8 +81,8 @@ nav {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 12px 20px;
-    padding: 8px 14px;
+    gap: 16px 28px;
+    padding: 16px 22px;
     margin: 0 -20px 22px;
     width: calc(100% + 40px);
     max-width: none;
@@ -104,12 +104,13 @@ body.dark-mode .site-header.hud-shell {
 .site-brand {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     flex: 0 0 auto;
     margin-right: 4px;
     text-decoration: none;
     color: inherit;
     font-weight: 800;
+    font-size: 1.18rem;
     letter-spacing: -0.03em;
 }
 
@@ -117,10 +118,10 @@ body.dark-mode .site-header.hud-shell {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 34px;
-    height: 34px;
-    border-radius: 4px;
-    font-size: 17px;
+    width: 46px;
+    height: 46px;
+    border-radius: 6px;
+    font-size: 22px;
     font-weight: 800;
     line-height: 1;
     color: #f4d312;
@@ -135,7 +136,7 @@ body.dark-mode .site-brand__badge {
 }
 
 .site-brand__name {
-    font-size: 1.05rem;
+    font-size: 1.35rem;
     max-width: 12rem;
     white-space: nowrap;
     overflow: hidden;
@@ -185,7 +186,7 @@ body.dark-mode .site-brand__badge {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 14px 22px;
+    gap: 18px 28px;
     flex: 1 1 240px;
     margin-bottom: 0;
 }
@@ -193,33 +194,35 @@ body.dark-mode .site-brand__badge {
 .header-search-form {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 10px;
     margin-left: auto;
 }
 
 .header-search-input {
-    width: 150px;
-    padding: 5px 8px;
-    border: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.35);
-    border-radius: 0;
-    background: transparent;
+    width: 250px;
+    padding: 12px 16px;
+    border: 1px solid rgba(0, 0, 0, 0.28);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.66);
     color: #161616;
-    font-size: 11px;
+    font-size: 14px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 }
 
 .header-search-input:focus {
     outline: none;
-    border-bottom-color: rgba(0, 0, 0, 0.8);
+    border-color: rgba(0, 0, 0, 0.65);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12);
+    background: rgba(255, 255, 255, 0.92);
 }
 
 .header-search-button {
-    padding: 5px 10px;
+    padding: 12px 18px;
     border: none;
     border-radius: 999px;
     background: #0a0a0a;
     color: #f6d356;
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 700;
     cursor: pointer;
 }
@@ -246,7 +249,7 @@ body.dark-mode .header-search-button:hover {
 .nav-cluster {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 10px;
     align-items: center;
 }
 
@@ -401,7 +404,7 @@ body.dark-mode .nav-user-chip {
     align-items: center;
     justify-content: center;
     padding: 10px 16px;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
     letter-spacing: 0.02em;
     line-height: 1.2;
@@ -481,11 +484,11 @@ body.dark-mode .nav-btn.nav-btn--ghost.logout-button:hover {
     border: none;
     box-shadow: none;
     color: var(--nav-bar-text);
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.02em;
-    padding: 8px 10px;
-    border-radius: 4px;
-    font-size: 12px;
+    padding: 12px 14px;
+    border-radius: 6px;
+    font-size: 15px;
 }
 
 .site-header.hud-shell .nav-btn:hover {
@@ -511,7 +514,7 @@ body.dark-mode .nav-btn.nav-btn--ghost.logout-button:hover {
     border: none;
     background: #111;
     color: #f4d312;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.24);
 }
 
 .site-header.hud-shell .nav-btn--accent:hover {
@@ -582,12 +585,16 @@ body.dark-mode .nav-profile-avatar {
 }
 
 body.dark-mode .site-header.hud-shell .lang-link {
-    border-color: rgba(255, 255, 255, 0.22);
-    color: var(--nav-bar-text);
+    /* Inactive chip stays light; text must be dark for contrast (EN was near-invisible). */
+    background: #f5f5f5;
+    color: #141414;
+    border-color: rgba(0, 0, 0, 0.28);
 }
 
 body.dark-mode .site-header.hud-shell .lang-link:hover {
-    border-color: rgba(255, 255, 255, 0.35);
+    background: #ffffff;
+    color: #0a0a0a;
+    border-color: rgba(0, 0, 0, 0.4);
 }
 
 body.dark-mode .site-header.hud-shell .lang-link.is-active {
@@ -626,9 +633,9 @@ body.dark-mode .site-header.hud-shell .hud-theme-btn:hover {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 42px;
-    min-height: 42px;
-    padding: 8px 10px;
+    min-width: 48px;
+    min-height: 48px;
+    padding: 10px 12px;
     font-size: 1.35rem;
     line-height: 1;
 }
@@ -683,10 +690,20 @@ body.dark-mode .hud-theme-btn {
 }
 
 .page-title {
-    margin-bottom: 20px;
+    margin: -20px -20px 12px;
+    padding: 14px 20px 10px;
     font-weight: 800;
     letter-spacing: -0.02em;
     color: var(--page-text);
+    background: linear-gradient(180deg, #1f1d35 0%, #2b2750 100%);
+    color: #f5f1ff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+body.dark-mode .page-title {
+    background: linear-gradient(180deg, rgba(18, 16, 30, 0.98) 0%, rgba(24, 20, 38, 0.98) 100%);
+    color: #f5f1ff;
+    border-bottom-color: rgba(255, 255, 255, 0.12);
 }
 
 .search-form {
@@ -1182,10 +1199,10 @@ body.dark-mode .message-success {
 }
 
 .lang-link {
-    padding: 8px 12px;
+    padding: 10px 14px;
     border-radius: 8px;
     border: 2px solid rgba(0, 0, 0, 0.12);
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
     letter-spacing: 0.06em;
 }
@@ -1222,13 +1239,18 @@ body.dark-mode .lang-link.is-active {
         margin: 12px;
     }
 
+    .page-title {
+        margin: -12px -12px 10px;
+        padding: 12px 12px 8px;
+    }
+
     .site-header.hud-shell {
         margin-left: -12px;
         margin-right: -12px;
         width: calc(100% + 24px);
         align-items: center;
-        gap: 10px 14px;
-        padding: 10px 14px;
+        gap: 14px 18px;
+        padding: 14px 14px;
     }
 
     .site-brand__name {
@@ -1279,10 +1301,12 @@ body.dark-mode .lang-link.is-active {
     .header-search-input {
         flex: 1 1 auto;
         width: auto;
+        min-height: 40px;
     }
 
     .header-search-button {
         flex: 0 0 auto;
+        min-height: 40px;
     }
 
     .nav-cluster--user {
@@ -1411,7 +1435,8 @@ body.dark-mode .lang-link.is-active {
     }
 
     .page-title {
-        margin-bottom: 12px;
+        margin: -12px -12px 10px;
+        padding: 10px 12px 8px;
     }
 
     .movie-title {

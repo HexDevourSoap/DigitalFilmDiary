@@ -136,6 +136,7 @@
   },
   "errorPage": {
     "title": "Something went wrong",
-    "home": "Go home"
+    "home": "Go home",
+    "loginRequired": "You need to log in to view this page."
   }
 }

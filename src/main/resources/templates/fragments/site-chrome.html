@@ -13,9 +13,8 @@
 </th:block>
 
 <header th:fragment="siteHeader" class="site-header hud-shell">
-    <a class="site-brand" th:href="@{|${langPrefix}/|}">
+    <a class="site-brand" th:href="@{|${langPrefix}/|}" aria-label="Filmu dienasgrāmata">
         <span class="site-brand__badge" aria-hidden="true">D</span>
-        <span class="site-brand__name" data-i18n="app.title">Movie Diary</span>
     </a>
     <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="primary-nav">
         <span class="nav-toggle__line" aria-hidden="true"></span>
