@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import lv.venta.fidi.dto.OmdbMovieDto;
 import lv.venta.fidi.enums.WatchStatus;
@@ -39,6 +40,7 @@ import lv.venta.fidi.repo.IWatchEventRepo;
 import lv.venta.fidi.service.OmdbClient;
 
 @SpringBootApplication
+@EnableScheduling
 public class FidiApplication {
     @Autowired
     private IGenreRepo genreRepo;

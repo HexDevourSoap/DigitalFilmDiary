@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Local secrets (Spring optional import) ###
+src/main/resources/fidi-local.properties
