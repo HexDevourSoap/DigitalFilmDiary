@@ -62,7 +62,10 @@ public class MovieSeeder implements CommandLineRunner {
 
             try {
                 Thread.sleep(300);
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                break;
+            }
         }
 
         System.out.println("Movies imported.");

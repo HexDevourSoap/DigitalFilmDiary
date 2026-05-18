@@ -6,7 +6,7 @@
         return window.__APP_ROOT__.replace(/\/*$/, "");
     }
 
-    /** Locale from URL: /en/... or /{context}/en/... */
+    
     function pathLang() {
         var path = location.pathname;
         var m = path.match(/^\/(lv|en)(\/|$)/);
@@ -64,7 +64,7 @@
     document.addEventListener("DOMContentLoaded", function () {
         var fromPath = pathLang();
         var serverLang = document.documentElement.getAttribute("data-app-lang");
-        // URL prefix wins; else server-rendered lang; else localStorage (must not override /en when JSON failed before)
+        
         var lng = fromPath || serverLang || localStorage.getItem("i18nextLng") || "lv";
         if (lng) {
             lng = String(lng).toLowerCase().split("-")[0];

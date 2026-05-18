@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
 
-import lv.venta.fidi.enums.WatchStatus;
+
 import lv.venta.fidi.model.AppUser;
 import lv.venta.fidi.model.Genre;
 import lv.venta.fidi.model.Movie;
