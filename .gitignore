@@ -34,3 +34,4 @@ build/
 
 ### Local secrets (Spring optional import) ###
 src/main/resources/fidi-local.properties
+.env

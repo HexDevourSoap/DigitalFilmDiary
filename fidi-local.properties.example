@@ -1,0 +1,2 @@
+# Copy to src/main/resources/fidi-local.properties (gitignored) for local secrets.
+omdb.api-key=your_omdb_api_key
