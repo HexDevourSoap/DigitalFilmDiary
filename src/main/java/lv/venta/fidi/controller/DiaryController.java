@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.security.Principal;
 import java.util.HashMap;
@@ -33,6 +34,7 @@ import lv.venta.fidi.model.Rating;
 import lv.venta.fidi.model.UserMovie;
 import lv.venta.fidi.repo.IAppUserRepo;
 import lv.venta.fidi.repo.IMovieRepo;
+import lv.venta.fidi.service.GenreLabelUiService;
 import lv.venta.fidi.service.IRatingService;
 import lv.venta.fidi.service.IUserMovieService;
 import lv.venta.fidi.service.MovieTitleUiService;
@@ -59,6 +61,9 @@ public class DiaryController {
 
     @Autowired
     private MovieTitleUiService movieTitleUiService;
+
+    @Autowired
+    private GenreLabelUiService genreLabelUiService;
 
     @GetMapping
     public String retrieveUserDiary(Model model,
@@ -92,19 +97,29 @@ public class DiaryController {
                 movieTitleUiService.localizeOmdbTitle(appLang, dto);
             }
 
-            List<UserMovie> filteredEntries = diaryEntries.stream()
-                    .filter(entry -> isInPeriod(entry.getPlannedDate(), fromDate, toDate))
-                    .toList();
+            boolean periodSelected = fromDate != null || toDate != null;
 
-            List<Rating> filteredRatings = ratings.stream()
-                    .filter(r -> r.getRatedAt() != null && isInPeriod(r.getRatedAt().toLocalDate(), fromDate, toDate))
-                    .toList();
+            Map<String, Integer> watchedPerMonth;
+            BigDecimal averageRating;
+            List<Map.Entry<String, Integer>> topGenres;
 
-            Map<String, Integer> watchedPerMonth = buildWatchedPerMonth(filteredEntries);
-            BigDecimal averageRating = calculateAverageRating(filteredRatings);
-            List<Map.Entry<String, Integer>> topGenres = buildTopGenres(filteredEntries, movieMap);
+            if (periodSelected) {
+                List<UserMovie> statsEntries = diaryEntries.stream()
+                        .filter(entry -> isInPeriod(entry.getPlannedDate(), fromDate, toDate))
+                        .toList();
+                List<Rating> statsRatings = ratings.stream()
+                        .filter(r -> r.getRatedAt() != null && isInPeriod(r.getRatedAt().toLocalDate(), fromDate, toDate))
+                        .toList();
+                watchedPerMonth = buildWatchedPerMonth(statsEntries);
+                averageRating = calculateAverageRating(statsRatings);
+                topGenres = buildTopGenres(statsEntries, movieMap, appLang);
+            } else {
+                watchedPerMonth = Collections.emptyMap();
+                averageRating = null;
+                topGenres = Collections.emptyList();
+            }
 
-            model.addAttribute("diaryEntries", filteredEntries);
+            model.addAttribute("diaryEntries", diaryEntries);
             model.addAttribute("movieMap", movieMap);
             model.addAttribute("ratingMap", ratingMap);
             model.addAttribute("statsFrom", fromDate);
@@ -350,7 +365,8 @@ public class DiaryController {
                 .divide(BigDecimal.valueOf(ratings.size()), 1, RoundingMode.HALF_UP);
     }
 
-    private List<Map.Entry<String, Integer>> buildTopGenres(List<UserMovie> entries, Map<String, OmdbMovieDto> movieMap) {
+    private List<Map.Entry<String, Integer>> buildTopGenres(
+            List<UserMovie> entries, Map<String, OmdbMovieDto> movieMap, String appLang) {
         Map<String, Integer> genreCounts = new HashMap<>();
         for (UserMovie entry : entries) {
             OmdbMovieDto movie = movieMap.get(entry.getImdbId());
@@ -363,7 +379,8 @@ public class DiaryController {
                 if (trimmed.isEmpty()) {
                     continue;
                 }
-                genreCounts.put(trimmed, genreCounts.getOrDefault(trimmed, 0) + 1);
+                String label = genreLabelUiService.displayGenreName(appLang, trimmed);
+                genreCounts.put(label, genreCounts.getOrDefault(label, 0) + 1);
             }
         }
         return genreCounts.entrySet().stream()
