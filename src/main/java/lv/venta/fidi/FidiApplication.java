@@ -544,7 +544,7 @@ public class FidiApplication {
                     "tt0120689",
                     Arrays.asList(fantasy, western));
 
-            // Extra catalog pack to increase depth across all genres
+            
             List<String> extraImdbIds = List.of(
                     "tt0120737", // LOTR: Fellowship
                     "tt0167261", // LOTR: Two Towers
@@ -605,7 +605,7 @@ public class FidiApplication {
                     "tt0043014", // Sunset Boulevard
                     "tt0053221", // Rio Bravo
                     "tt0062622", // Butch Cassidy and the Sundance Kid
-                    // Horror-heavy pack
+                    
                     "tt0081505", // The Shining
                     "tt6751668", // Parasite (thriller/drama, sometimes misc)
                     "tt0070047", // The Exorcist
@@ -643,7 +643,7 @@ public class FidiApplication {
                 try {
                     getOrUpdateMovieFromOmdb(movieRepo, genreRepo, omdbClient, extraImdbId, Arrays.asList(drama));
                 } catch (Exception ignored) {
-                    // Skip invalid/unavailable IDs; keep seeding resilient.
+                    
                 }
             }
 
